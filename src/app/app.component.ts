@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { DiplomasBlockchainService } from './services/diplomas-blockchain.service';
 import { Title } from '@angular/platform-browser';
-import { addressAlumno, addressUniversidad, addressEmpresa } from './config/diplomas-blockchain.config';
+import { addressAlumno, addressUniversidad, addressEmpresa, accountEstado } from './config/diplomas-blockchain.config';
 import { identidades, IDENTITY_TYPE, IDENTITY_ROLES } from './model/identidad-unir';
 import { Subscription } from 'rxjs';
 
@@ -129,17 +129,7 @@ export class AppComponent implements OnDestroy {
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
    */
   async parametrizar() {
-    // // sc correspondiente a ClaimHolder del Alumno
-    // await this.diplomasBlockchainService.deployIdentidadDigital(addressAlumno, IDENTITY_TYPE.CLAIM_HOLDER);
-    // // sc correspondiente a ClaimHolder de la Universidad
-    // await this.diplomasBlockchainService.deployIdentidadDigital(addressUniversidad, IDENTITY_TYPE.CLAIM_HOLDER);
-    // // sc correspondiente a ClaimVerifier de la empresa
-    // await this.diplomasBlockchainService.deployIdentidadDigital(addressEmpresa, IDENTITY_TYPE.CLAIM_VERIFIER);
-
-    // // inicializar las instancias de los sm y los eventos necesarios
-    // await this.diplomasBlockchainService.initIdentidadesDigitales();
-
-    await this.diplomasBlockchainService.parametrizar();
+    await this.diplomasBlockchainService.parametrizar(accountEstado);
 
     this.consola +=  '****Sistema Parametrizado****';
   }

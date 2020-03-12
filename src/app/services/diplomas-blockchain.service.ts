@@ -8,6 +8,9 @@ import { identidades, IDENTITY_TYPE } from '../model/identidad-unir';
 import { Subject, Observable } from 'rxjs';
 
 import { accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2 } from '../config/diplomas-blockchain.config';
+import { estadoAddress, ectsTokenAddress } from '../config/diplomas-blockchain.config';
+import { estadoABI } from '../contracts/estado.smart.contract';
+import { ectsTokenABI } from '../contracts/ectstoken.smart.contract';
 
 declare let window: any;
 
@@ -49,120 +52,82 @@ export class DiplomasBlockchainService {
     this.web3 = window.web3;
 
     // inicializar las instancias de los sc que representan las identidades digitales
-    this.initIdentidadesDigitales();
+    this.initSmartContracts();
   }
 
-  /**
-   * Inicializa las instancias de los sc que representan a las identidades digitales
-   * Para ello utiliza el abi de cada tipo de instancia ClaimHolder y
-   * ClaimVerifier disponibles en la aplicación
-   */
-  async initIdentidadesDigitales() {
-    // inicializar las instancias de los SC en función del tipo de identidad
-    for ( let identidad of identidades.values() ) {
-      if ( identidad.type === IDENTITY_TYPE.CLAIM_HOLDER ) {
-        identidad.instancia = new this.web3.eth.Contract(claimHolderABI, identidad.smartContractAddress);
-      } else if ( identidad.type === IDENTITY_TYPE.CLAIM_VERIFIER ) {
-        identidad.instancia = new this.web3.eth.Contract(claimVerifierABI, identidad.smartContractAddress);
-      }
+  private estadoInstance:any;
+  private ectsTokenInstance:any;
 
-      // Verificar si el sc i.e. la identidad está desplegada en la red blockchain
-      const code = await this.web3.eth.getCode(identidad.smartContractAddress);
-      // Si el code es distinto de 0x -> el contrato está desplegado
-      if ( code !== '0x' ) {
-        this.totalIdentidadesDesplegadas++;
-      }
+  async initSmartContracts() {
+    // Verificar si el sc estado está en la red blockchain
+    const code = await this.web3.eth.getCode(estadoAddress);
+    // Si el code es distinto de 0x -> el contrato está desplegado
+    if ( code !== '0x' ) {
+      this.estadoInstance = new this.web3.eth.Contract(estadoABI, estadoAddress);
     }
 
-    // Si se han desplegado las 3 identidades ->
-    // se añaden los listeners de eventos a las diferentes instancias
-    if ( this.totalIdentidadesDesplegadas === 3 ) {
-      // capturar evento para obtener el id de ejecución
-      identidades.get(addressAlumno).instancia.events.ExecutionRequested({}, ( error, result ) => {
-        if ( !error ) {
-          const mensaje = 'CLAIM añadido con id de ejecución: ' + result.returnValues.executionId;
-          this.consola$.next(mensaje);
-        } else {
-          this.consola$.next('Error: ' + error);
-        }
-      });
-
-      // capturar evento para obtener claim valido
-      identidades.get(addressEmpresa).instancia.events.ClaimValid({}, ( error, result ) => {
-        if ( !error ) {
-          this.consola$.next('CLAIM válido');
-        } else {
-          this.consola$.next('Error: ' + error);
-        }
-      });
-
-      // capturar evento para obtener claim NO valido
-      identidades.get(addressEmpresa).instancia.events.ClaimInvalid({}, ( error, result ) => {
-        if ( !error ) {
-          this.consola$.next('CLAIM NO válido');
-        } else {
-          this.consola$.next('Error: ' + error);
-        }
-      });
+    // Verificar si el sc ects está en la red blockchain
+    const code2 = await this.web3.eth.getCode(ectsTokenAddress);
+    // Si el code es distinto de 0x -> el contrato está desplegado
+    if ( code2 !== '0x' ) {
+      this.ectsTokenInstance = new this.web3.eth.Contract(ectsTokenABI, ectsTokenAddress);
     }
   }
 
-  /**
-   * Desplegar smart contract en la red blockchain. Se utiliza para realizar el despliegue
-   * de los sc tanto el abi como el bytecode de ClaimHolder o ClaimVerifier según sea
-   * el tipo de identidad a desplegar.
-   *
-   * @param address dirección propietario del smart contract
-   * @param identidadType tipo de indentidad que se desea desplegar
-   */
-  async deployIdentidadDigital( address: string, identidadType: number ) {
-    let c: any;
-    let payload: any ;
-    if ( identidadType === IDENTITY_TYPE.CLAIM_HOLDER ) {
-      c = new this.web3.eth.Contract(claimHolderABI);
-      payload = { data: '0x' + claimHolderBytecode };
+  // /**
+  //  * Inicializa las instancias de los sc que representan a las identidades digitales
+  //  * Para ello utiliza el abi de cada tipo de instancia ClaimHolder y
+  //  * ClaimVerifier disponibles en la aplicación
+  //  */
+  // async initIdentidadesDigitales() {
+  //   // inicializar las instancias de los SC en función del tipo de identidad
+  //   for ( let identidad of identidades.values() ) {
+  //     if ( identidad.type === IDENTITY_TYPE.CLAIM_HOLDER ) {
+  //       identidad.instancia = new this.web3.eth.Contract(claimHolderABI, identidad.smartContractAddress);
+  //     } else if ( identidad.type === IDENTITY_TYPE.CLAIM_VERIFIER ) {
+  //       identidad.instancia = new this.web3.eth.Contract(claimVerifierABI, identidad.smartContractAddress);
+  //     }
 
-    } else if ( identidadType === IDENTITY_TYPE.CLAIM_VERIFIER ) {
-      c = new this.web3.eth.Contract(claimVerifierABI);
-      // En el caso de ser ClaimVerifier se debe informar como argumento del constructor
-      // la dirección del smartcontract del issuer (Universidad)
-      payload = {
-        data: '0x' + claimVerifierBytecode,
-        arguments: [identidades.get(addressUniversidad).smartContractAddress]
-      };
-    }
+  //     // Verificar si el sc i.e. la identidad está desplegada en la red blockchain
+  //     const code = await this.web3.eth.getCode(identidad.smartContractAddress);
+  //     // Si el code es distinto de 0x -> el contrato está desplegado
+  //     if ( code !== '0x' ) {
+  //       this.totalIdentidadesDesplegadas++;
+  //     }
+  //   }
 
-    // Estimación del gas a utilizar
-    const estimatedGas = await c.deploy(payload).estimateGas({from: address});
-    const parameters = {
-      from: address,
-      gas: estimatedGas + 1
-    };
+  //   // Si se han desplegado las 3 identidades ->
+  //   // se añaden los listeners de eventos a las diferentes instancias
+  //   if ( this.totalIdentidadesDesplegadas === 3 ) {
+  //     // capturar evento para obtener el id de ejecución
+  //     identidades.get(addressAlumno).instancia.events.ExecutionRequested({}, ( error, result ) => {
+  //       if ( !error ) {
+  //         const mensaje = 'CLAIM añadido con id de ejecución: ' + result.returnValues.executionId;
+  //         this.consola$.next(mensaje);
+  //       } else {
+  //         this.consola$.next('Error: ' + error);
+  //       }
+  //     });
 
-    // Desplegar el contrato en la red
-    // tal como se recoge en la documentación de despliegue el compartamiento es
-    // algo anómalo al recuperar el receipt con la versión web3 utilizada 1.0.0-beta.55
-    // realmente está activandose cuando entra un nuevo bloque en la cadena
-    c.deploy(payload)
-      .send(parameters)
-      .on('error', ( error ) => {
-        console.log(error);
-      })
-      .on('receipt', ( receipt ) => {
-        console.log(receipt);
-      });
-  }
+  //     // capturar evento para obtener claim valido
+  //     identidades.get(addressEmpresa).instancia.events.ClaimValid({}, ( error, result ) => {
+  //       if ( !error ) {
+  //         this.consola$.next('CLAIM válido');
+  //       } else {
+  //         this.consola$.next('Error: ' + error);
+  //       }
+  //     });
 
-  /**
-   * Verifica si se han desplegado las 3 identidades (sc) necesarias de la práctica
-   */
-  isIdentidadesDigitalesDesplegadas() {
-    if ( this.totalIdentidadesDesplegadas === 3 ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  //     // capturar evento para obtener claim NO valido
+  //     identidades.get(addressEmpresa).instancia.events.ClaimInvalid({}, ( error, result ) => {
+  //       if ( !error ) {
+  //         this.consola$.next('CLAIM NO válido');
+  //       } else {
+  //         this.consola$.next('Error: ' + error);
+  //       }
+  //     });
+  //   }
+  // }
 
   /**
    * Obtiene una key de un propósito concreto para una dirección concreto realizando la llamada
@@ -374,16 +339,16 @@ export class DiplomasBlockchainService {
   /**
    * Permite al estado parametrizar on-chain
    */
-  async parametrizar() {
+  async parametrizar(addressFrom: string) {
     // registrar universidades
-    this.registrarUniversidad(accountUniversidad1);
-    this.registrarUniversidad(accountUniversidad2);
+    await this.registrarUniversidad(addressFrom, accountUniversidad1);
+    await this.registrarUniversidad(addressFrom, accountUniversidad2);
 
     // registrar profesor
-    this.registrarProfesor(accountProfesor);
+    await this.registrarProfesor(addressFrom, accountProfesor);
 
     // registrar alumno
-    this.registrarAlumno(accountAlumno);
+    await this.registrarAlumno(addressFrom, accountAlumno);
 
     // crear asignatura
     this.registrarAsignatura('Desarrollo de Aplicaciones Blockchain', 'DAB', 6, 3);
@@ -392,42 +357,92 @@ export class DiplomasBlockchainService {
     this.registrarUnivesidadEnAsignatura('0x...', accountUniversidad1, accountProfesor);
 
     this.parametrizado = true;
-
   }
 
   /**
    * Registra una universidad on-chain
-   * @param _account 
+   * @param _account
    */
-  async registrarUniversidad( _account : string ) {
+  async registrarUniversidad( addressFrom: string, _account : string ) {
     // todo llamada al smart contract que crea la universidad
-    this.consola$.next('Universidad registrada para la dirección: ' + _account);
+    // Estimar el gas necesario
+    const estimatedGas = await this.estadoInstance.methods.registrarUniversidad(
+      _account
+    ).estimateGas({from: addressFrom});
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    this.estadoInstance.methods.registrarUniversidad(
+        _account
+    ).send({
+        from: addressFrom,
+        gas: estimatedGas + 1
+    }, (error: any, result: any) => {
+        if (!error) {
+          this.consola$.next('Universidad registrada para la dirección: ' + _account);
+        } else {
+          this.consola$.next('Error: ' + error);
+        }
+    });
+
   }
 
   /**
    * Registrar un profesor on-chain
-   * @param _account 
+   * @param _account
    */
-  async registrarProfesor( _account : string ) {
-    // todo llamada al smart contract que crea el profesor
-    this.consola$.next('Profesor registrado para la dirección: ' + _account);
+  async registrarProfesor( addressFrom: string, _account : string ) {    
+    // Estimar el gas necesario
+    const estimatedGas = await this.estadoInstance.methods.registrarProfesor(
+      _account
+    ).estimateGas({from: addressFrom});
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    this.estadoInstance.methods.registrarProfesor(
+        _account
+    ).send({
+        from: addressFrom,
+        gas: estimatedGas + 1
+    }, (error: any, result: any) => {
+        if (!error) {
+          this.consola$.next('Profesor registrado para la dirección: ' + _account);
+        } else {
+          this.consola$.next('Error: ' + error);
+        }
+    });
   }
 
   /**
    * Registra un alumno on-chain
-   * @param _account 
+   * @param _account
    */
-  async registrarAlumno( _account : string ) {
-    // todo llamada al smart contract que crea el alumno
-    this.consola$.next('Alumno registrado para la dirección: ' + _account);
+  async registrarAlumno( addressFrom: string, _account : string ) {
+    // todo llamada al smart contract que crea la universidad
+    // Estimar el gas necesario
+    const estimatedGas = await this.estadoInstance.methods.registrarAlumno(
+      _account
+    ).estimateGas({from: addressFrom});
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    this.estadoInstance.methods.registrarAlumno(
+        _account
+    ).send({
+        from: addressFrom,
+        gas: estimatedGas + 1
+    }, (error: any, result: any) => {
+        if (!error) {
+          this.consola$.next('Alumno registrado para la dirección: ' + _account);
+        } else {
+          this.consola$.next('Error: ' + error);
+        }
+    });
   }
 
   /**
    * Registra una asignatura on-chain
-   * @param _nombre 
-   * @param _simbolo 
-   * @param _creditos 
-   * @param _experimentabilidad 
+   * @param _nombre
+   * @param _simbolo
+   * @param _creditos
+   * @param _experimentabilidad
    */
   async registrarAsignatura( _nombre : string, _simbolo : string, _creditos : number, _experimentabilidad : number ) {
     // todo llamada al smart contract que crea la asignatura
@@ -437,9 +452,9 @@ export class DiplomasBlockchainService {
 
   /**
    * Registra una universidad y asignatura en una asignatura on-chain
-   * @param _asignatura 
-   * @param _universidad 
-   * @param _profesor 
+   * @param _asignatura
+   * @param _universidad
+   * @param _profesor
    */
   async registrarUnivesidadEnAsignatura( _asignatura: string, _universidad: string, _profesor: string ) {
     // todo llamada al smart contract que registra el profesor en la asignatura
@@ -447,7 +462,7 @@ export class DiplomasBlockchainService {
   }
 
 
-  
+
 
 
 }
