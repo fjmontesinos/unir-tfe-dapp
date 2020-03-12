@@ -350,9 +350,18 @@
     <!-- Next Steps -->
     <h2>{{ title }} [ App ]</h2>
 
+    <div>
+        <p>
+            Seleccione la dirección con la que interactuará:
+            <select (change)="onChange($event.target.value)">
+                <option *ngFor="let i of accounts">{{i}}</option>
+            </select>
+        </p>
+    </div>
+
     <div [hidden]="isParametrizado()">
         <p>
-            Debe parametrizar primero el sistema utilizando la cuenta de estado que gestionará posteriormente el entorno como owner.
+            <br /> Debe parametrizar primero el sistema utilizando la cuenta de estado que gestionará posteriormente el entorno como owner.
         </p>
         <p style="text-align:center;padding:20px">
             <input class="btn btn-success" type="button" name="parametrizar" value="Inicializar Entidades" (click)="inicializarEntidades()"> &nbsp;&nbsp;&nbsp;
@@ -361,72 +370,24 @@
     </div>
 
     <div [hidden]="! isParametrizado()">
-        <p>
-            Seleccione la dirección con la que interactuará:
-            <select (change)="onChange($event.target.value)">
-                <option *ngFor="let i of accounts">{{i}}</option>
-            </select>
-        </p>
+
 
         <div class="card-container">
             <form name="identidad">
-                <table cellpadding="5">
-                    <tr>
-                        <td>
-                            Key Purpose:
-                            <select class="form-control" #keyPurpose>
-                                <option value="1">Management</option>
-                                <option value="2">Action</option>
-                                <option value="3">Claim Signer</option>
-                                <option value="4">Encryption</option>
-                            </select> de:
-                            <select #accountGetKey>
-                                <option *ngFor="let i of accountIdentities">{{i}}</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input class="btn btn-success" type="button" name="getKeyByPurpose_Alumno" (click)="pendienteDesarrollar()" value="Obtener Key by Purpose de Identidad" />
-                            <br>
-                        </td>
-                    </tr>
-                    <tr [hidden]="disableOpcionesUniversidad">
-                        <td>
-                            Purpose:
-                            <select class="form-control" #keyPurpose><option value="1">Management</option><option value="2">Action</option><option value="3" selected>Claim Signer</option><option value="4">Encryption</option></select> Type:
-                            <select class="form-control" #keyType><option value="1">ECDSA</option><option value="2">RSA</option></select>
-                        </td>
-                        <td>
-                            <input class="btn btn-success" type="button" name="addkey_Uni" value="Universidad - A&ntilde;adir Claim Key" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesUniversidad">
-                        </td>
-                    </tr>
-                    <tr [hidden]="disableOpcionesUniversidad">
-                        <td nowrap>
-                            Claim: <input class="form-control" type="text" size="65" #claim value="Certificado Experto Universitario en Desarrollo de Aplicaciones Blockchain"><br>
-                        </td>
-                        <td>
-                            <input type="button" name="aniadirclaim" value="Universidad - A&ntilde;adir Claim a Alumno" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesUniversidad">
-                        </td>
-                    </tr>
-                    <tr [hidden]="disableOpcionesAlumno">
-                        <td>
-                            Execution Id: <input class="form-control" type="text" size="10" #executionId value=""><br>
-                        </td>
-                        <td>
-                            <input type="button" name="approval_unialumno" value="Alumno - Aprobar Claim" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesAlumno">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td nowrap>
-                            Verificar Claim: <select class="form-control" #claimType><option value="4">TITULO ACADEMICO</option><option value="5">PERMISO DE CONDUCIR</option></select> de:
-                            <select class="form-control" #accountIdentityCheckClaim>
-                                <option *ngFor="let i of accountIdentities">{{i}}</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="button" name="verifier_unialumno" value="Verificar Claim de Identidad" (click)="pendienteDesarrollar()">
-                        </td>
-                    </tr>
-                </table>
+
+                <div [hidden]="disableOpcionesAlumno">
+                    <app-comprar-ects></app-comprar-ects>
+                </div>
+                <div [hidden]="disableOpcionesAlumno">
+                    <app-matricular-asignatura></app-matricular-asignatura>
+                </div>
+                <div [hidden]="disableOpcionesProfesor">
+                    <app-evaluar-asignatura></app-evaluar-asignatura>
+                </div>
+                <div [hidden]="disableOpcionesAlumno">
+                    <app-trasldar-asignatura></app-trasldar-asignatura>
+                </div>
+
             </form>
 
         </div>

@@ -1,9 +1,10 @@
 import { Component, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
-import { DiplomasBlockchainService } from './services/diplomas-blockchain.service';
+import { DiplomasBlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
-import { addressAlumno, addressUniversidad, addressEmpresa, accountEstado } from './config/diplomas-blockchain.config';
+import { addressAlumno, addressUniversidad, addressEmpresa, accountEstado, accountAlumno, accountProfesor } from './config/diplomas-blockchain.config';
 import { identidades, IDENTITY_TYPE, IDENTITY_ROLES } from './model/identidad-unir';
 import { Subscription } from 'rxjs';
+import { BlockchainLocalStorageService } from './services/blockchain-local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -12,24 +13,17 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnDestroy {
   consola$: Subscription;
-  title = 'UNIR :: TFE - Digitilzación Blockchain de Asignaturas';
-  accounts = [addressUniversidad, addressAlumno, addressEmpresa];
-  accountIdentities = [addressUniversidad, addressAlumno];
+  title = 'UNIR :: TFE - Experto en Desarrollo de Aplicaciones Blockchain';
+  accounts = [accountEstado, accountProfesor, accountAlumno];
   selectedAccount = this.accounts[0];
   consola = '';
-  disableOpcionesAlumno = false;
-  disableOpcionesUniversidad = false;
-
-  @ViewChild('keyPurpose', {static: true}) keyPurposeAlumnoInput: ElementRef;
-  @ViewChild('accountGetKey', {static: true}) accountGetKey: ElementRef;
-  @ViewChild('keyPurpose', {static: true}) keyPurpose: ElementRef;
-  @ViewChild('keyType', {static: true}) keyType: ElementRef;
-  @ViewChild('claim', {static: true}) claim: ElementRef;
-  @ViewChild('accountIdentityCheckClaim', {static: true}) accountIdentityCheckClaim: ElementRef;
-  @ViewChild('executionId', {static: true}) executionId: ElementRef;
-  @ViewChild('claimType', {static: true}) claimType: ElementRef;
+  disableOpcionesEstado = true;
+  disableOpcionesUniversidad = true;
+  disableOpcionesProfesor = true;
+  disableOpcionesAlumno = true;
 
   constructor(private diplomasBlockchainService: DiplomasBlockchainService,
+              private blockchainLocalStorageService: BlockchainLocalStorageService,
               private ngZone: NgZone,
               private titleServe: Title) {
                 this.titleServe.setTitle(this.title);
@@ -59,16 +53,20 @@ export class AppComponent implements OnDestroy {
    * no lo están.
    */
   setSecurityByAccount( ) {
-    // if ( identidades.get(this.selectedAccount).rol === IDENTITY_ROLES.ALUMNO ) {
-    //   this.disableOpcionesUniversidad = true;
-    //   this.disableOpcionesAlumno = false;
-    // } else if ( identidades.get(this.selectedAccount).rol === IDENTITY_ROLES.UNIVERSIDAD ) {
-    //   this.disableOpcionesUniversidad = false;
-    //   this.disableOpcionesAlumno = true;
-    // } else {
-    //   this.disableOpcionesUniversidad = true;
-    //   this.disableOpcionesAlumno = true;
-    // }
+    this.disableOpcionesAlumno = true;
+    this.disableOpcionesProfesor = true;
+    this.disableOpcionesUniversidad = true;
+    this.disableOpcionesEstado = true;
+    
+    if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) ) {
+      this.disableOpcionesEstado = false;
+    } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
+      this.disableOpcionesUniversidad = false;
+    } else if ( this.blockchainLocalStorageService.isProfesor(this.selectedAccount) ) {
+      this.disableOpcionesProfesor = false;
+    } else if ( this.blockchainLocalStorageService.isAlumno(this.selectedAccount) ) {
+      this.disableOpcionesAlumno = false;
+    }
   }
 
   /**

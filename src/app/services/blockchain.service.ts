@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { claimHolderABI, claimHolderBytecode } from '../contracts/claimHolder';
-import { claimVerifierABI, claimVerifierBytecode } from '../contracts/claimVerifier';
-import { addressAlumno, addressUniversidad, addressEmpresa } from '../config/diplomas-blockchain.config';
-import { KEY_TYPES, RCP_URL_WS, CLAIM_TYPES } from '../config/diplomas-blockchain.config';
-import { identidades, IDENTITY_TYPE } from '../model/identidad-unir';
+import { RCP_URL_WS } from '../config/diplomas-blockchain.config';
 import { Subject, Observable } from 'rxjs';
 
 import { accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2 } from '../config/diplomas-blockchain.config';
@@ -109,13 +105,17 @@ export class DiplomasBlockchainService {
     this.blockchainLocalStorage.get("profesores") !== null &&
     this.blockchainLocalStorage.get("alumnos") !== null &&
     this.blockchainLocalStorage.get("asignaturas") !== null &&
-    this.blockchainLocalStorage.get("confFinalizada") === true);
+    this.blockchainLocalStorage.get("confFinalizada") === true &&
+    this.blockchainLocalStorage.get("estado") === accountEstado);
   }
 
   /**
    * Permite al estado parametrizar on-chain
    */
   async inicializarEntidades(addressFrom: string) {
+    // save en localstorage el estado
+    this.blockchainLocalStorage.save( 'estado', accountEstado);
+
     // registrar universidades on-chain
     await this.registrarUniversidad(addressFrom, accountUniversidad1);
     await this.registrarUniversidad(addressFrom, accountUniversidad2);
