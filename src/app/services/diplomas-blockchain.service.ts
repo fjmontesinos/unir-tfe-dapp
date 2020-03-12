@@ -12,6 +12,7 @@ import { estadoAddress, ectsTokenAddress } from '../config/diplomas-blockchain.c
 import { estadoABI } from '../contracts/estado.smart.contract';
 import { ectsTokenABI } from '../contracts/ectstoken.smart.contract';
 import { asignaturaTokenABI } from '../contracts/asignaturatoken.smart.contracts';
+import { BlockchainLocalStorageService } from './blockchain-local-storage.service';
 
 declare let window: any;
 
@@ -26,7 +27,7 @@ export class DiplomasBlockchainService {
   private web3: any;
   public asignaturas = new Map<string, any>();
 
-  constructor() {
+  constructor(private blockchainLocalStorage: BlockchainLocalStorageService) {
     this.init();
   }
 
@@ -70,10 +71,22 @@ export class DiplomasBlockchainService {
       // añadir listener para el evento AsignaturaCreada
       this.estadoInstance.events.AsignaturaCreada({}, ( error, result ) => {
         if ( !error ) {
-          let contratoAsignatura = new this.web3.eth.Contract(asignaturaTokenABI, result.returnValues.asignatura);
+          const contratoAsignatura = new this.web3.eth.Contract(asignaturaTokenABI, result.returnValues.asignatura);
           this.asignaturas.set(result.returnValues.asignatura, contratoAsignatura);
           this.consola$.next('Registrada asignatura: ' + result.returnValues.nombre + ' (' +
             result.returnValues.simbolo +  '),\nen la dirección: ' + result.returnValues.asignatura);
+
+          // salvar en el localstorage
+          const item = {address: result.returnValues.asignatura, nombre: result.returnValues.nombre,
+              simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos};
+          let items: Array<{address: string, nombre: string, simbolo: string, creditos: number}>;
+          items = this.blockchainLocalStorage.get("asignaturas");
+          if ( items === null ) {
+            items = [];
+          }
+          items.push(item);
+          this.blockchainLocalStorage.save("asignaturas", items);
+
         } else {
           this.consola$.next('Error: ' + error);
         }
@@ -88,37 +101,52 @@ export class DiplomasBlockchainService {
     }
   }
 
-  private parametrizado1: boolean = false;
-  private parametrizado2: boolean = false;
-
   /**
    * Retorna si ha sido parametrizado on-chain la app
    */
   isParametrizado() {
-    return this.parametrizado1 && this.parametrizado2;
+    return (this.blockchainLocalStorage.get("universidades") !== null &&
+    this.blockchainLocalStorage.get("profesores") !== null &&
+    this.blockchainLocalStorage.get("alumnos") !== null &&
+    this.blockchainLocalStorage.get("asignaturas") !== null &&
+    this.blockchainLocalStorage.get("confFinalizada") === true);
   }
 
   /**
    * Permite al estado parametrizar on-chain
    */
   async inicializarEntidades(addressFrom: string) {
-    // registrar universidades
+    // registrar universidades on-chain
     await this.registrarUniversidad(addressFrom, accountUniversidad1);
     await this.registrarUniversidad(addressFrom, accountUniversidad2);
 
-    // registrar profesor
+    // save en localstorage
+    let universidades: Array<{address: string, nombre: string}> = [];
+    universidades.push({address: accountUniversidad1, nombre: 'UNIR'});
+    universidades.push({address: accountUniversidad2, nombre: 'UNEX'});
+    this.blockchainLocalStorage.save( 'universidades', universidades);
+
+    // registrar profesor on-chain
     await this.registrarProfesor(addressFrom, accountProfesor);
+
+    // save en localstorage
+    let profesores: Array<{address: string, nombre: string, apellidos: string, email: string}> = [];
+    profesores.push({address: accountProfesor, nombre: 'Jose Luis', apellidos: 'Nieto García', email: 'jlnieto@gmail.com'});
+    this.blockchainLocalStorage.save( 'profesores', profesores);
 
     // registrar alumno
     await this.registrarAlumno(addressFrom, accountAlumno);
 
+    // save en localstorage
+    let alumnos: Array<{address: string, nombre: string, apellidos: string, email: string}> = [];
+    alumnos.push({address: accountAlumno, nombre: 'Javier', apellidos: 'Montesinos Morcillo', email: 'fj.montesinos@gmail.com'});
+    this.blockchainLocalStorage.save( 'alumnos', alumnos);
+
     // crear asignatura 1
     await this.registrarAsignatura(addressFrom, 'Desarrollo de Aplicaciones Blockchain', 'DAB', 6, 3);
 
-    // crear asignatura 2
+    // // crear asignatura 2
     await this.registrarAsignatura(addressFrom, 'Trabajo Final de Experto', 'TFE', 8, 3);
-
-    this.parametrizado1 = true;
   }
 
   async registrarUniversidades( addressFrom: string ) {
@@ -127,7 +155,7 @@ export class DiplomasBlockchainService {
       await this.registrarUnivesidadEnAsignatura(addressFrom, a, accountUniversidad1, accountProfesor);
     }
 
-    this.parametrizado2 = true;
+    this.blockchainLocalStorage.save("confFinalizada", true);
   }
 
   /**
