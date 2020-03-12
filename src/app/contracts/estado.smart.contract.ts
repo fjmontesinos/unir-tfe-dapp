@@ -30,7 +30,7 @@ export const estadoABI = [
         {
           "indexed": false,
           "internalType": "address",
-          "name": "_address",
+          "name": "asignatura",
           "type": "address"
         },
         {

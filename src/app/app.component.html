@@ -354,7 +354,10 @@
         <p>
             Debe parametrizar primero el sistema utilizando la cuenta de estado que gestionará posteriormente el entorno como owner.
         </p>
-        <p style="text-align:center;padding:20px"><input class="btn btn-success" type="button" name="deployIdentidad" value="Parametrizar" (click)="parametrizar()"></p>
+        <p style="text-align:center;padding:20px">
+            <input class="btn btn-success" type="button" name="parametrizar" value="Inicializar Entidades" (click)="inicializarEntidades()"> &nbsp;&nbsp;&nbsp;
+            <input class="btn btn-success" type="button" name="registrarUniversidades" value="Registrar Universidades en Asignatura" (click)="registrarUniversidadesEnAsignatura()">
+        </p>
     </div>
 
     <div [hidden]="! isParametrizado()">
@@ -382,7 +385,7 @@
                             </select>
                         </td>
                         <td>
-                            <input class="btn btn-success" type="button" name="getKeyByPurpose_Alumno" (click)="getKeyByPurpose()" value="Obtener Key by Purpose de Identidad" />
+                            <input class="btn btn-success" type="button" name="getKeyByPurpose_Alumno" (click)="pendienteDesarrollar()" value="Obtener Key by Purpose de Identidad" />
                             <br>
                         </td>
                     </tr>
@@ -393,7 +396,7 @@
                             <select class="form-control" #keyType><option value="1">ECDSA</option><option value="2">RSA</option></select>
                         </td>
                         <td>
-                            <input class="btn btn-success" type="button" name="addkey_Uni" value="Universidad - A&ntilde;adir Claim Key" (click)="addKeyUniversidad()" [disabled]="disableOpcionesUniversidad">
+                            <input class="btn btn-success" type="button" name="addkey_Uni" value="Universidad - A&ntilde;adir Claim Key" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesUniversidad">
                         </td>
                     </tr>
                     <tr [hidden]="disableOpcionesUniversidad">
@@ -401,7 +404,7 @@
                             Claim: <input class="form-control" type="text" size="65" #claim value="Certificado Experto Universitario en Desarrollo de Aplicaciones Blockchain"><br>
                         </td>
                         <td>
-                            <input type="button" name="aniadirclaim" value="Universidad - A&ntilde;adir Claim a Alumno" (click)="addClaimUniversidadToAlumno()" [disabled]="disableOpcionesUniversidad">
+                            <input type="button" name="aniadirclaim" value="Universidad - A&ntilde;adir Claim a Alumno" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesUniversidad">
                         </td>
                     </tr>
                     <tr [hidden]="disableOpcionesAlumno">
@@ -409,7 +412,7 @@
                             Execution Id: <input class="form-control" type="text" size="10" #executionId value=""><br>
                         </td>
                         <td>
-                            <input type="button" name="approval_unialumno" value="Alumno - Aprobar Claim" (click)="aprobarClaimByAlumno()" [disabled]="disableOpcionesAlumno">
+                            <input type="button" name="approval_unialumno" value="Alumno - Aprobar Claim" (click)="pendienteDesarrollar()" [disabled]="disableOpcionesAlumno">
                         </td>
                     </tr>
                     <tr>
@@ -420,7 +423,7 @@
                             </select>
                         </td>
                         <td>
-                            <input type="button" name="verifier_unialumno" value="Verificar Claim de Identidad" (click)="verificarClaimIdentidadByEmpresa()">
+                            <input type="button" name="verifier_unialumno" value="Verificar Claim de Identidad" (click)="pendienteDesarrollar()">
                         </td>
                     </tr>
                 </table>

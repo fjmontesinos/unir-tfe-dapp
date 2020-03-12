@@ -78,60 +78,18 @@ export class AppComponent implements OnDestroy {
     this.consola = '';
   }
 
-  /**
-   * Obtiene una key por proposito para una cuenta seleccionada
-   */
-  async getKeyByPurpose() {
-    const purpose = this.keyPurpose.nativeElement.value;
-    const account = this.accountGetKey.nativeElement.value;
-    await this.diplomasBlockchainService.getKeyByPurpose(this.selectedAccount, account, purpose);
+  pendienteDesarrollar(){
+    this.consola += 'Pendiente Desarrollar';
   }
-
-  /**
-   * Añade la key a la universidad en principio debe ser de tipo claim
-   */
-  async addKeyUniversidad() {
-    // TODO validar que sea de tipo claim y que sea la universidad
-    await this.diplomasBlockchainService.addKeyUniversidad(this.selectedAccount,
-      this.keyPurpose.nativeElement.value,
-      this.keyType.nativeElement.value);
-  }
-
-  /**
-   * Añade la claim por parte de la universidad al alumno
-   */
-  async addClaimUniversidadToAlumno() {
-    const claim = this.claim.nativeElement.value;
-    // TODO validar que el claim no venga vacío, que es la universidad y que la dirección alumno es ClaimHolder
-    await this.diplomasBlockchainService.addClaimUniversidadToAlumno(this.selectedAccount, addressAlumno, claim);
-  }
-
-  /**
-   * Aprobar claim por parte del alumno añadido por la universidad
-   */
-  async aprobarClaimByAlumno() {
-    const executionId = this.executionId.nativeElement.value;
-    // TODO validar que es el alumno el que emite la acción y que executionId es un valor numérico
-    await this.diplomasBlockchainService.approbarClaimByAlumno(this.selectedAccount, executionId);
-  }
-
-  /**
-   * Verificar claim sobre una identidad digital
-   */
-  async verificarClaimIdentidadByEmpresa( ) {
-    const claimType = this.claimType.nativeElement.value;
-    const accountIdentity = this.accountIdentityCheckClaim.nativeElement.value;
-    await this.diplomasBlockchainService.verificarClaimIdentidadByEmpresa(this.selectedAccount,
-      accountIdentity, claimType);
-  }
-
   /**
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
    */
-  async parametrizar() {
-    await this.diplomasBlockchainService.parametrizar(accountEstado);
+  async inicializarEntidades() {
+    await this.diplomasBlockchainService.inicializarEntidades(accountEstado);
+  }
 
-    this.consola +=  '****Sistema Parametrizado****';
+  async registrarUniversidadesEnAsignatura() {
+    await this.diplomasBlockchainService.registrarUniversidades(accountEstado);
   }
 
   /**
