@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { RCP_URL_WS } from '../config/diplomas-blockchain.config';
+import { RCP_URL_WS } from '../config/blockchain.dapp.config';
 import { Subject, Observable } from 'rxjs';
 
-import { accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2 } from '../config/diplomas-blockchain.config';
-import { estadoAddress, ectsTokenAddress } from '../config/diplomas-blockchain.config';
+import { accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2 } from '../config/blockchain.dapp.config';
+import { estadoAddress, ectsTokenAddress } from '../config/blockchain.dapp.config';
 import { estadoABI } from '../contracts/estado.smart.contract';
 import { ectsTokenABI } from '../contracts/ectstoken.smart.contract';
 import { asignaturaTokenABI } from '../contracts/asignaturatoken.smart.contracts';

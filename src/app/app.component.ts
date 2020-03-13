@@ -1,8 +1,7 @@
-import { Component, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnDestroy, NgZone } from '@angular/core';
 import { DiplomasBlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
-import { addressAlumno, addressUniversidad, addressEmpresa, accountEstado, accountAlumno, accountProfesor } from './config/diplomas-blockchain.config';
-import { identidades, IDENTITY_TYPE, IDENTITY_ROLES } from './model/identidad-unir';
+import { accountEstado, accountAlumno, accountProfesor } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
 import { BlockchainLocalStorageService } from './services/blockchain-local-storage.service';
 
@@ -57,8 +56,8 @@ export class AppComponent implements OnDestroy {
     this.disableOpcionesProfesor = true;
     this.disableOpcionesUniversidad = true;
     this.disableOpcionesEstado = true;
-    
-    if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) ) {
+
+    if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) || (this.selectedAccount === accountEstado) ) {
       this.disableOpcionesEstado = false;
     } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
       this.disableOpcionesUniversidad = false;
@@ -83,11 +82,11 @@ export class AppComponent implements OnDestroy {
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
    */
   async inicializarEntidades() {
-    await this.diplomasBlockchainService.inicializarEntidades(accountEstado);
+    await this.diplomasBlockchainService.inicializarEntidades(this.selectedAccount);
   }
 
   async registrarUniversidadesEnAsignatura() {
-    await this.diplomasBlockchainService.registrarUniversidades(accountEstado);
+    await this.diplomasBlockchainService.registrarUniversidades(this.selectedAccount);
   }
 
   /**

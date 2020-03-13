@@ -363,7 +363,7 @@
         <p>
             <br /> Debe parametrizar primero el sistema utilizando la cuenta de estado que gestionará posteriormente el entorno como owner.
         </p>
-        <p style="text-align:center;padding:20px">
+        <p style="text-align:center;padding:20px" [hidden]="disableOpcionesEstado">
             <input class="btn btn-success" type="button" name="parametrizar" value="Inicializar Entidades" (click)="inicializarEntidades()"> &nbsp;&nbsp;&nbsp;
             <input class="btn btn-success" type="button" name="registrarUniversidades" value="Registrar Universidades en Asignatura" (click)="registrarUniversidadesEnAsignatura()">
         </p>
