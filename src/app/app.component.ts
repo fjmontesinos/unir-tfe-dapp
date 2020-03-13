@@ -12,7 +12,7 @@ import { BlockchainLocalStorageService } from './services/blockchain-local-stora
 })
 export class AppComponent implements OnDestroy {
   consola$: Subscription;
-  title = 'UNIR :: TFE - Experto en Desarrollo de Aplicaciones Blockchain';
+  title = 'UNIR :: TFE - Digitalización Blockchain de Asignautras y Títulos';
   accounts = [accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2];
   selectedAccount = this.accounts[0];
   consola = '';
