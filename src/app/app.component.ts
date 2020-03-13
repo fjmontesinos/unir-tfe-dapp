@@ -3,7 +3,7 @@ import { DiplomasBlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
 import { accountEstado, accountAlumno, accountProfesor, accountUniversidad1, accountUniversidad2 } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
-import { BlockchainLocalStorageService } from './services/blockchain-local-storage.service';
+import { BlockchainLocalStorageService } from './services/localstorage.service';
 
 @Component({
   selector: 'app-root',

@@ -8,7 +8,7 @@ import { estadoAddress, ectsTokenAddress } from '../config/blockchain.dapp.confi
 import { estadoABI } from '../contracts/estado.smart.contract';
 import { ectsTokenABI } from '../contracts/ectstoken.smart.contract';
 import { asignaturaTokenABI } from '../contracts/asignaturatoken.smart.contracts';
-import { BlockchainLocalStorageService } from './blockchain-local-storage.service';
+import { BlockchainLocalStorageService } from './localstorage.service';
 
 declare let window: any;
 
