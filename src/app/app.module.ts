@@ -2,10 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { ComprarECTSComponent } from './alumno/comprar-ects/comprar-ects.component';
-import { MatricularAsignaturaComponent } from './alumno/matricular-asignatura/matricular-asignatura.component';
-import { EvaluarAsignaturaComponent } from './profesor/evaluar-asignatura/evaluar-asignatura.component';
-import { TrasldarAsignaturaComponent } from './alumno/trasldar-asignatura/trasldar-asignatura.component';
+import { ComprarECTSComponent } from './components/alumno/comprar-ects/comprar-ects.component';
+import { MatricularAsignaturaComponent } from './components/alumno/matricular-asignatura/matricular-asignatura.component';
+import { EvaluarAsignaturaComponent } from './components/profesor/evaluar-asignatura/evaluar-asignatura.component';
+import { TrasldarAsignaturaComponent } from './components/alumno/trasldar-asignatura/trasldar-asignatura.component';
+import { CalcularEctsComponent } from './components/publico/calcular-ects/calcular-ects.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { TrasldarAsignaturaComponent } from './alumno/trasldar-asignatura/trasld
     ComprarECTSComponent,
     MatricularAsignaturaComponent,
     EvaluarAsignaturaComponent,
-    TrasldarAsignaturaComponent
+    TrasldarAsignaturaComponent,
+    CalcularEctsComponent
   ],
   imports: [
     BrowserModule
