@@ -26,8 +26,19 @@ export class BlockchainLocalStorageService {
         if ( universidades[i].address === account ) { return true; }
       }
     }
-    
+
     return false;
+  }
+
+  getUniversidad( account: string ) {
+    const universidades = this.get('universidades');
+    if ( universidades != null ) {
+      for (let i = 0; i < universidades.length; i++) {
+        if ( universidades[i].address === account ) { return universidades[i]; }
+      }
+    }
+
+    return null;
   }
 
   isProfesor( account: string ) {
@@ -40,6 +51,17 @@ export class BlockchainLocalStorageService {
     return false;
   }
 
+  getProfesor( account: string ) {
+    const profesores = this.get('profesores');
+    if ( profesores != null ) {
+      for (let i = 0; i < profesores.length; i++) {
+        if ( profesores[i].address === account ) { return profesores[i]; }
+      }
+    }
+
+    return null;
+  }
+
   isAlumno( account: string ) {
     const alumnos = this.get('alumnos');
     if ( alumnos != null ) {
@@ -47,8 +69,19 @@ export class BlockchainLocalStorageService {
         if ( alumnos[i].address === account ) { return true; }
       }
     }
-    
+
     return false;
+  }
+
+  getAlumno( account: string ) {
+    const alumnos = this.get('alumnos');
+    if ( alumnos != null ) {
+      for (let i = 0; i < alumnos.length; i++) {
+        if ( alumnos[i].address === account ) { return alumnos[i]; }
+      }
+    }
+
+    return null;
   }
 
 }

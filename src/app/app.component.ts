@@ -1,7 +1,7 @@
 import { Component, OnDestroy, NgZone } from '@angular/core';
 import { DiplomasBlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
-import { accountEstado, accountAlumno, accountProfesor } from './config/blockchain.dapp.config';
+import { accountEstado, accountAlumno, accountProfesor, accountUniversidad1, accountUniversidad2 } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
 import { BlockchainLocalStorageService } from './services/blockchain-local-storage.service';
 
@@ -13,13 +13,14 @@ import { BlockchainLocalStorageService } from './services/blockchain-local-stora
 export class AppComponent implements OnDestroy {
   consola$: Subscription;
   title = 'UNIR :: TFE - Experto en Desarrollo de Aplicaciones Blockchain';
-  accounts = [accountEstado, accountProfesor, accountAlumno];
+  accounts = [accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2];
   selectedAccount = this.accounts[0];
   consola = '';
   disableOpcionesEstado = true;
   disableOpcionesUniversidad = true;
   disableOpcionesProfesor = true;
   disableOpcionesAlumno = true;
+  usuario: any;
 
   constructor(private diplomasBlockchainService: DiplomasBlockchainService,
               private blockchainLocalStorageService: BlockchainLocalStorageService,
@@ -59,12 +60,16 @@ export class AppComponent implements OnDestroy {
 
     if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) || (this.selectedAccount === accountEstado) ) {
       this.disableOpcionesEstado = false;
+      this.usuario = {nombre: 'Estado'};
     } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
       this.disableOpcionesUniversidad = false;
+      this.usuario = this.blockchainLocalStorageService.getUniversidad(this.selectedAccount);
     } else if ( this.blockchainLocalStorageService.isProfesor(this.selectedAccount) ) {
       this.disableOpcionesProfesor = false;
+      this.usuario = this.blockchainLocalStorageService.getProfesor(this.selectedAccount);
     } else if ( this.blockchainLocalStorageService.isAlumno(this.selectedAccount) ) {
       this.disableOpcionesAlumno = false;
+      this.usuario = this.blockchainLocalStorageService.getAlumno(this.selectedAccount);
     }
   }
 
