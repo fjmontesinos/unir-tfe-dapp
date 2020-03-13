@@ -1,10 +1,24 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { RCP_URL_WS } from '../config/blockchain.dapp.config';
+import {
+  RCP_URL_WS,
+  LOCAL_STORAGE_KEY_UNIVERSIDADES,
+  LOCAL_STORAGE_KEY_PROFESORES,
+  LOCAL_STORAGE_KEY_ALUMNOS,
+  LOCAL_STORAGE_KEY_ASIGNATURAS,
+  LOCAL_STORAGE_KEY_ENTIDADES_REG,
+  LOCAL_STORAGE_KEY_UNIVERSIDADES_REG,
+  LOCAL_STORAGE_KEY_ESTADO } from '../config/blockchain.dapp.config';
 import { Subject, Observable } from 'rxjs';
-
-import { accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2 } from '../config/blockchain.dapp.config';
-import { estadoAddress, ectsTokenAddress } from '../config/blockchain.dapp.config';
+import {
+  accountEstado,
+  accountUniversidad1,
+  accountProfesor,
+  accountAlumno,
+  accountUniversidad2 } from '../config/blockchain.dapp.config';
+import {
+  estadoAddress,
+  ectsTokenAddress } from '../config/blockchain.dapp.config';
 import { estadoABI } from '../contracts/estado.smart.contract';
 import { ectsTokenABI } from '../contracts/ectstoken.smart.contract';
 import { asignaturaTokenABI } from '../contracts/asignaturatoken.smart.contracts';
@@ -76,12 +90,12 @@ export class DiplomasBlockchainService {
           const item = {address: result.returnValues.asignatura, nombre: result.returnValues.nombre,
               simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos};
           let items: Array<{address: string, nombre: string, simbolo: string, creditos: number}>;
-          items = this.blockchainLocalStorage.get("asignaturas");
+          items = this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
           if ( items === null ) {
             items = [];
           }
           items.push(item);
-          this.blockchainLocalStorage.save("asignaturas", items);
+          this.blockchainLocalStorage.save(LOCAL_STORAGE_KEY_ASIGNATURAS, items);
 
         } else {
           this.consola$.next('Error: ' + error);
@@ -101,12 +115,13 @@ export class DiplomasBlockchainService {
    * Retorna si ha sido parametrizado on-chain la app
    */
   isParametrizado() {
-    return (this.blockchainLocalStorage.get("universidades") !== null &&
-    this.blockchainLocalStorage.get("profesores") !== null &&
-    this.blockchainLocalStorage.get("alumnos") !== null &&
-    this.blockchainLocalStorage.get("asignaturas") !== null &&
-    this.blockchainLocalStorage.get("confFinalizada") === true &&
-    this.blockchainLocalStorage.get("estado") === accountEstado);
+    return (this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_UNIVERSIDADES) !== null &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_PROFESORES) !== null &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ALUMNOS) !== null &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ASIGNATURAS) !== null &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ENTIDADES_REG) === true &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG) === true &&
+    this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ESTADO) === accountEstado);
   }
 
   /**
@@ -114,7 +129,7 @@ export class DiplomasBlockchainService {
    */
   async inicializarEntidades(addressFrom: string) {
     // save en localstorage el estado
-    this.blockchainLocalStorage.save( 'estado', accountEstado);
+    this.blockchainLocalStorage.save( LOCAL_STORAGE_KEY_ESTADO, accountEstado);
 
     // registrar universidades on-chain
     await this.registrarUniversidad(addressFrom, accountUniversidad1);
@@ -124,7 +139,7 @@ export class DiplomasBlockchainService {
     let universidades: Array<{address: string, nombre: string}> = [];
     universidades.push({address: accountUniversidad1, nombre: 'UNIR'});
     universidades.push({address: accountUniversidad2, nombre: 'UNEX'});
-    this.blockchainLocalStorage.save( 'universidades', universidades);
+    this.blockchainLocalStorage.save( LOCAL_STORAGE_KEY_UNIVERSIDADES, universidades);
 
     // registrar profesor on-chain
     await this.registrarProfesor(addressFrom, accountProfesor);
@@ -132,7 +147,7 @@ export class DiplomasBlockchainService {
     // save en localstorage
     let profesores: Array<{address: string, nombre: string, apellidos: string, email: string}> = [];
     profesores.push({address: accountProfesor, nombre: 'Jose Luis', apellidos: 'Nieto García', email: 'jlnieto@gmail.com'});
-    this.blockchainLocalStorage.save( 'profesores', profesores);
+    this.blockchainLocalStorage.save( LOCAL_STORAGE_KEY_PROFESORES, profesores);
 
     // registrar alumno
     await this.registrarAlumno(addressFrom, accountAlumno);
@@ -140,13 +155,15 @@ export class DiplomasBlockchainService {
     // save en localstorage
     let alumnos: Array<{address: string, nombre: string, apellidos: string, email: string}> = [];
     alumnos.push({address: accountAlumno, nombre: 'Javier', apellidos: 'Montesinos Morcillo', email: 'fj.montesinos@gmail.com'});
-    this.blockchainLocalStorage.save( 'alumnos', alumnos);
+    this.blockchainLocalStorage.save( LOCAL_STORAGE_KEY_ALUMNOS, alumnos);
 
     // crear asignatura 1
     await this.registrarAsignatura(addressFrom, 'Desarrollo de Aplicaciones Blockchain', 'DAB', 6, 3);
 
     // // crear asignatura 2
     await this.registrarAsignatura(addressFrom, 'Trabajo Final de Experto', 'TFE', 8, 3);
+
+    this.blockchainLocalStorage.save(LOCAL_STORAGE_KEY_ENTIDADES_REG, true);
   }
 
   async registrarUniversidades( addressFrom: string ) {
@@ -155,7 +172,7 @@ export class DiplomasBlockchainService {
       await this.registrarUnivesidadEnAsignatura(addressFrom, a, accountUniversidad1, accountProfesor);
     }
 
-    this.blockchainLocalStorage.save("confFinalizada", true);
+    this.blockchainLocalStorage.save(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG, true);
   }
 
   /**

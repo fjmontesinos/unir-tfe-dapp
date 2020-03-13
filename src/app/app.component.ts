@@ -1,7 +1,16 @@
 import { Component, OnDestroy, NgZone } from '@angular/core';
 import { DiplomasBlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
-import { accountEstado, accountAlumno, accountProfesor, accountUniversidad1, accountUniversidad2 } from './config/blockchain.dapp.config';
+import {
+  accountEstado,
+  accountAlumno,
+  accountProfesor,
+  accountUniversidad1,
+  accountUniversidad2,
+  LOCAL_STORAGE_KEY_ENTIDADES_REG,
+  LOCAL_STORAGE_KEY_UNIVERSIDADES_REG,
+  ESTADO_NOMBRE,
+  DAPP_TITULO } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
 import { BlockchainLocalStorageService } from './services/localstorage.service';
 
@@ -12,7 +21,7 @@ import { BlockchainLocalStorageService } from './services/localstorage.service';
 })
 export class AppComponent implements OnDestroy {
   consola$: Subscription;
-  title = 'UNIR :: TFE - Digitalización Blockchain de Asignautras y Títulos';
+  title = DAPP_TITULO;
   accounts = [accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2];
   selectedAccount = this.accounts[0];
   consola = '';
@@ -60,7 +69,7 @@ export class AppComponent implements OnDestroy {
 
     if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) || (this.selectedAccount === accountEstado) ) {
       this.disableOpcionesEstado = false;
-      this.usuario = {nombre: 'Estado'};
+      this.usuario = {nombre: ESTADO_NOMBRE};
     } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
       this.disableOpcionesUniversidad = false;
       this.usuario = this.blockchainLocalStorageService.getUniversidad(this.selectedAccount);
@@ -76,12 +85,13 @@ export class AppComponent implements OnDestroy {
   /**
    * Realiza un "clear" de la consola
    */
-  limpiarConsola() {
+  borrarConsola() {
     this.consola = '';
   }
 
-  pendienteDesarrollar(){
-    this.consola += 'Pendiente Desarrollar';
+  pendienteDesarrollar() {
+    this.consola +=  '<pre>En desarrollo</pre>';
+
   }
   /**
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
@@ -101,6 +111,14 @@ export class AppComponent implements OnDestroy {
    */
   isParametrizado() {
     return this.diplomasBlockchainService.isParametrizado();
+  }
+
+  isEntidadesInicializadas() {
+    return (this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_ENTIDADES_REG) === true);
+  }
+
+  isUniversidadesRegistradas() {
+    return (this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG) === true);
   }
 
 }

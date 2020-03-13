@@ -8,6 +8,17 @@
 export const RCP_URL_HTTP = 'http://localhost:8545';
 export const RCP_URL_WS = 'ws://localhost:8545';
 
+export const DAPP_TITULO = 'UNIR :: TFE - Digitalización Títulos Académicos';
+export const ESTADO_NOMBRE = 'Estado';
+
+export const LOCAL_STORAGE_KEY_ESTADO = 'estado';
+export const LOCAL_STORAGE_KEY_UNIVERSIDADES = 'universidades';
+export const LOCAL_STORAGE_KEY_PROFESORES = 'profesores';
+export const LOCAL_STORAGE_KEY_ALUMNOS = 'alumnos';
+export const LOCAL_STORAGE_KEY_ENTIDADES_REG = 'entidades-registradas';
+export const LOCAL_STORAGE_KEY_ASIGNATURAS = 'asignaturas';
+export const LOCAL_STORAGE_KEY_UNIVERSIDADES_REG = 'universidades-registradas';
+
 // Direcciones de los diferentes, usuarios
 // .......................................................
 export const accountEstado = '0x5C4756bb912Dea209B94587D4d761aCE5d321054';

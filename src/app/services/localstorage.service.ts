@@ -1,4 +1,9 @@
 import { Injectable } from '@angular/core';
+import {
+  LOCAL_STORAGE_KEY_ESTADO,
+  LOCAL_STORAGE_KEY_UNIVERSIDADES,
+  LOCAL_STORAGE_KEY_PROFESORES,
+  LOCAL_STORAGE_KEY_ALUMNOS } from '../config/blockchain.dapp.config';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +21,11 @@ export class BlockchainLocalStorageService {
   }
 
   isEstado( account: string ) {
-    return (localStorage.getItem('estado') === account);
+    return (localStorage.getItem(LOCAL_STORAGE_KEY_ESTADO) === account);
   }
 
   isUniversidad( account: string ) {
-    const universidades = this.get('universidades');
+    const universidades = this.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
     if ( universidades ) {
       for (let i = 0; i < universidades.length; i++) {
         if ( universidades[i].address === account ) { return true; }
@@ -31,7 +36,7 @@ export class BlockchainLocalStorageService {
   }
 
   getUniversidad( account: string ) {
-    const universidades = this.get('universidades');
+    const universidades = this.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
     if ( universidades != null ) {
       for (let i = 0; i < universidades.length; i++) {
         if ( universidades[i].address === account ) { return universidades[i]; }
@@ -42,7 +47,7 @@ export class BlockchainLocalStorageService {
   }
 
   isProfesor( account: string ) {
-    const profesores = this.get('profesores');
+    const profesores = this.get(LOCAL_STORAGE_KEY_PROFESORES);
     if ( profesores != null ) {
       for (let i = 0; i < profesores.length; i++) {
         if ( profesores[i].address === account ) { return true; }
@@ -52,7 +57,7 @@ export class BlockchainLocalStorageService {
   }
 
   getProfesor( account: string ) {
-    const profesores = this.get('profesores');
+    const profesores = this.get(LOCAL_STORAGE_KEY_PROFESORES);
     if ( profesores != null ) {
       for (let i = 0; i < profesores.length; i++) {
         if ( profesores[i].address === account ) { return profesores[i]; }
@@ -63,7 +68,7 @@ export class BlockchainLocalStorageService {
   }
 
   isAlumno( account: string ) {
-    const alumnos = this.get('alumnos');
+    const alumnos = this.get(LOCAL_STORAGE_KEY_ALUMNOS);
     if ( alumnos != null ) {
       for (let i = 0; i < alumnos.length; i++) {
         if ( alumnos[i].address === account ) { return true; }
@@ -74,7 +79,7 @@ export class BlockchainLocalStorageService {
   }
 
   getAlumno( account: string ) {
-    const alumnos = this.get('alumnos');
+    const alumnos = this.get(LOCAL_STORAGE_KEY_ALUMNOS);
     if ( alumnos != null ) {
       for (let i = 0; i < alumnos.length; i++) {
         if ( alumnos[i].address === account ) { return alumnos[i]; }
