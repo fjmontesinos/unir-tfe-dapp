@@ -57,7 +57,7 @@ export class ComprarECTSComponent implements OnInit {
     if (mensajeError === '') {
       this.modalService.open(this.modal).result.then( (r) => {
         if (r === 'ok') {
-          this.internalComprarTokens();
+          this.comprar();
         }
 
       }, error => {
@@ -69,8 +69,9 @@ export class ComprarECTSComponent implements OnInit {
 
   }
 
-  internalComprarTokens() {
-
+  async comprar() {
+    console.log(this.selectedAccount + ' - ' + this.tokens * ECTS_DECIMALS + ' - ' + this.weis);
+    await this.blockchainService.comprarTokens(this.selectedAccount, this.universidad, this.tokens * ECTS_DECIMALS, this.weis);
   }
 
 }

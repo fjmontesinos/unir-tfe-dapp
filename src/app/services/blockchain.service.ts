@@ -341,7 +341,8 @@ export class BlockchainService {
 
 
   async calcularECTS(addressFrom: string, universidad: string,
-      experimentabilidad: number, anioMatricula: number, creditos: number): Promise<any> {
+                     experimentabilidad: number, anioMatricula: number,
+                     creditos: number): Promise<any> {
 
         // Estimar el gas necesario
     const estimatedGas = await this.estadoInstance.methods.calcularECTSTokensParaAsignatura(
@@ -368,13 +369,13 @@ export class BlockchainService {
 
   async calcularWeis(addressFrom: string, universidad: string, tokens: number): Promise<any> {
       // Estimar el gas necesario
-    const estimatedGas = await this.estadoInstance.methods.calcularCreditosToWeis(
+    const estimatedGas = await this.estadoInstance.methods.calcularTokensToWeis(
       universidad, tokens
     ).estimateGas({from: addressFrom});
-  
+
     // ejecutar el añadido de la claim en la identidad del alumno
     return new Promise((resolve, reject) => {
-      this.estadoInstance.methods.calcularCreditosToWeis(
+      this.estadoInstance.methods.calcularTokensToWeis(
         universidad, tokens
       ).call({
         from: addressFrom,
@@ -389,7 +390,26 @@ export class BlockchainService {
       });
     }) as Promise<any>;
   }
-  
+
+
+  async comprarTokens(addressFrom: string, universidad: string, tokens: number, weis: number): Promise<any> {
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.estadoInstance.methods.comprarTokens(
+        universidad, tokens
+      ).send({
+        from: addressFrom,
+        gas: 100000,
+        value: weis
+      }, (error: any, r: any) => {
+        if (error) {
+          this.consola$.next('Error: ' + error);
+          reject(0);
+        }
+      });
+    }) as Promise<any>;
+  }
+
 
 
 }

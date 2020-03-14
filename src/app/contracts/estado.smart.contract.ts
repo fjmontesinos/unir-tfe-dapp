@@ -197,11 +197,21 @@ export const estadoABI = [
       },
       {
         "internalType": "uint256",
+        "name": "_experimentabilidad",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_anioMatricula",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "_creditos",
         "type": "uint256"
       }
     ],
-    "name": "calcularCreditosToWeis",
+    "name": "calcularECTSTokensParaAsignatura",
     "outputs": [
       {
         "internalType": "uint256",
@@ -223,21 +233,11 @@ export const estadoABI = [
       },
       {
         "internalType": "uint256",
-        "name": "_experimentabilidad",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_anioMatricula",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_creditos",
+        "name": "_tokens",
         "type": "uint256"
       }
     ],
-    "name": "calcularECTSTokensParaAsignatura",
+    "name": "calcularTokensToWeis",
     "outputs": [
       {
         "internalType": "uint256",
@@ -575,7 +575,7 @@ export const estadoABI = [
       },
       {
         "internalType": "uint256",
-        "name": "_creditos",
+        "name": "_tokens",
         "type": "uint256"
       }
     ],
