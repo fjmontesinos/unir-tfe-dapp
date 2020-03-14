@@ -81,10 +81,6 @@ export class ComprarECTSComponent implements OnInit {
    */
   async ejecutarCompra() {
     await this.blockchainService.comprarTokens(this.selectedAccount, this.universidad, this.tokens * ECTS_DECIMALS, this.weis);
-
-    // Actualizar balance de ether y de tokens ECTS
-    this.blockchainService.getBalanceECTSToken(this.selectedAccount);
-    this.blockchainService.getBalanceEther(this.selectedAccount);
   }
 
 }

@@ -632,6 +632,9 @@ export class BlockchainService {
       (error: any, r: any) => {
         if (error) {
           this.consola$.next("Error: " + error);
+        } else {
+          this.getBalanceECTSToken(addressFrom);
+          this.getBalanceEther(addressFrom);
         }
       }
     );
@@ -655,6 +658,8 @@ export class BlockchainService {
       (error: any, r: any) => {
         if (error) {
           this.consola$.next("Error: " + error);
+        } else {
+          this.getBalanceECTSToken(addressFrom);
         }
       }
     );

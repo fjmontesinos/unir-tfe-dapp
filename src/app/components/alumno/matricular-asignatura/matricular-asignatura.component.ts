@@ -74,8 +74,5 @@ export class MatricularAsignaturaComponent implements OnInit {
    */
   async ejecutarMatricula() {
     await this.blockchainService.matricularEnAsignatura(this.selectedAccount, this.universidad, this.asignatura, this.curso);
-
-    // Actualizar balance de ECTS tras la matrícula
-    this.blockchainService.getBalanceECTSToken(this.selectedAccount);
   }
 }
