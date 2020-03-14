@@ -26,6 +26,7 @@ export class ComprarECTSComponent implements OnInit {
 
   ngOnInit() {
     this.universidades = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
+    this.universidad = this.universidades[0].address;
   }
 
   validarFormulario(comprar: boolean): string {
