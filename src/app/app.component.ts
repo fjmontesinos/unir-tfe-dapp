@@ -21,18 +21,26 @@ import { WEIS_POR_ETHER, ECTS_DECIMALS } from './config/blockchain.dapp.config';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnDestroy, OnInit {
+
   consola$: Subscription;
+  balanceEther$: Subscription;
+  balanceECTS$: Subscription;
+  balanceAsignaturaToken: Subscription;
+
   title = DAPP_TITULO;
   accounts = [accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2];
   selectedAccount = accountEstado;
   consola = '';
+
   disableOpcionesEstado = true;
   disableOpcionesUniversidad = true;
   disableOpcionesProfesor = true;
   disableOpcionesAlumno = true;
+
   usuario: any;
-  tokensUsuario: number;
   etherUsuario: number;
+  tokensECTSUsuario: number;
+  tokensAsignaturaUsuario: number;
 
   constructor(private blockchainService: BlockchainService,
               private blockchainLocalStorageService: BlockchainLocalStorageService,
@@ -47,6 +55,18 @@ export class AppComponent implements OnDestroy, OnInit {
                       document.getElementById('consola').scrollHeight;
                   });
                 });
+
+                this.balanceEther$ = this.blockchainService.getBalanceEther$().subscribe( (weis) => {
+                  this.ngZone.run( () => {
+                    this.etherUsuario = weis / WEIS_POR_ETHER;
+                  });
+                });
+
+                this.balanceECTS$ = this.blockchainService.getBalanceECTS$().subscribe( (balance) => {
+                  this.ngZone.run( () => {
+                    this.tokensECTSUsuario = balance / ECTS_DECIMALS;
+                  });
+                });
               }
 
   ngOnInit() {
@@ -59,10 +79,10 @@ export class AppComponent implements OnDestroy, OnInit {
     // aplicar la seguridad en base a la nueva cuenta seleccionada
     this.setSecurityByAccount();
     // recuperar los tokens de la cuenta
-    const tokens = await this.blockchainService.getBalanceECTSToken(this.selectedAccount);
-    this.tokensUsuario = parseInt(tokens) / ECTS_DECIMALS;
-    const weis = await this.blockchainService.getBalanceEther(this.selectedAccount);
-    this.etherUsuario = parseInt(weis) / WEIS_POR_ETHER;
+    this.blockchainService.getBalanceECTSToken(this.selectedAccount);
+    // this.tokensECTSUsuario = parseInt(tokens) / ECTS_DECIMALS;
+    this.blockchainService.getBalanceEther(this.selectedAccount);
+    // this.etherUsuario = parseInt(weis) / WEIS_POR_ETHER;
   }
 
   async ngOnDestroy() {
