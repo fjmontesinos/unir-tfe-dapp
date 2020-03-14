@@ -28,7 +28,7 @@ export class ComprarECTSComponent implements OnInit {
     this.universidades = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
   }
 
-  validarFormulario(): string {
+  validarFormulario(comprar: boolean): string {
     let mensajeError = '';
     if ( this.universidad === undefined ) {
       mensajeError += ' - Debe seleccionar la universidad';
@@ -38,11 +38,17 @@ export class ComprarECTSComponent implements OnInit {
       mensajeError += ( mensajeError !== '' ? '\n' : '') + ' - Debe establecer los tokens que desea adquirir';
     }
 
+    if(comprar) {
+      if ( this.weis === undefined ) {
+        mensajeError += ( mensajeError !== '' ? '\n' : '') + ' - Debe establecer los weis necesarios';
+      }
+    }
+
     return mensajeError;
   }
 
   async calcularWeis() {
-    const mensajeError = this.validarFormulario();
+    const mensajeError = this.validarFormulario(false);
     if (mensajeError === '') {
       const r = await this.blockchainService.calcularWeis(this.selectedAccount, this.universidad, this.tokens * ECTS_DECIMALS);
       this.weis = parseInt(r) ;
@@ -52,7 +58,7 @@ export class ComprarECTSComponent implements OnInit {
   }
 
   comprarTokens() {
-    const mensajeError = this.validarFormulario();
+    const mensajeError = this.validarFormulario(true);
 
     if (mensajeError === '') {
       this.modalService.open(this.modal).result.then( (r) => {
