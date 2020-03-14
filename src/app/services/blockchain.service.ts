@@ -92,7 +92,7 @@ export class BlockchainService {
 
   /**
    * Inicialización de los smart contracts basados en su código ABI.
-   * 
+   *
    */
   async initSmartContracts() {
     // Verificar si el sc estado está en la red blockchain
@@ -444,7 +444,6 @@ export class BlockchainService {
    * @param cuenta
    */
   async getBalanceECTSToken(cuenta: string) {
-    console.log(cuenta);
     // Estimar el gas necesario
     const estimatedGas = await this.ectsTokenInstance.methods
       .balanceOf(cuenta)
@@ -465,6 +464,39 @@ export class BlockchainService {
         }
       }
     );
+  }
+
+  /**
+   * Obtiene el balance en tokens ECTS de una cuenta para una universidad concreta
+   * @param cuenta
+   */
+  async getBalanceECTSTokenPorUniversidad(addressFrom: string, universidad: string): Promise<any> {
+    // Estimar el gas necesario
+    const estimatedGas = await this.ectsTokenInstance.methods
+      .getTokensPorUniversidad(universidad)
+      .estimateGas({ from: addressFrom });
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.ectsTokenInstance.methods
+        .getTokensPorUniversidad(
+          universidad
+        )
+        .call(
+          {
+            from: addressFrom,
+            gas: estimatedGas + 1
+          },
+          (error: any, tokens: any) => {
+            if (error) {
+              this.consola$.next('Error: ' + error);
+              reject(0);
+            } else {
+              resolve(tokens);
+            }
+          }
+        );
+    }) as Promise<any>;
   }
 
   /**
@@ -596,6 +628,32 @@ export class BlockchainService {
         from: addressFrom,
         gas: 120000,
         value: weis
+      },
+      (error: any, r: any) => {
+        if (error) {
+          this.consola$.next("Error: " + error);
+        }
+      }
+    );
+  }
+
+  async matricularEnAsignatura(addressFrom: string, universidad: string, asignatura: string, curso: string) {
+    // matricular(address universidad, string memory cursoAcademico)
+    
+    
+    const contratoAsignatura = new this.web3.eth.Contract(
+      asignaturaTokenABI,
+      asignatura
+    );
+    // Estimar el gas necesario
+    const estimatedGas = await contratoAsignatura.methods.matricular(universidad, curso)
+      .estimateGas({ from: addressFrom });
+
+    // realizar la matrícula del alumno en la asignatura
+    contratoAsignatura.methods.matricular(universidad, curso).send(
+      {
+        from: addressFrom,
+        gas: estimatedGas + 1
       },
       (error: any, r: any) => {
         if (error) {

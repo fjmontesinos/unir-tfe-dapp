@@ -211,6 +211,27 @@ export const ectsTokenABI = [
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_universidad",
+        "type": "address"
+      }
+    ],
+    "name": "getTokensPorUniversidad",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {

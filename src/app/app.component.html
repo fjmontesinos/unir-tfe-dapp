@@ -204,7 +204,7 @@
                 <app-comprar-ects [selectedAccount]="selectedAccount"></app-comprar-ects>
             </div>
             <div class="tab-pane fade" id="pills-matricular" role="tabpanel" aria-labelledby="pills-matricular-tab" [hidden]="disableOpcionesAlumno">
-                <app-matricular-asignatura></app-matricular-asignatura>
+                <app-matricular-asignatura [selectedAccount]="selectedAccount"></app-matricular-asignatura>
             </div>
             <div class="tab-pane fade" id="pills-evaluar" role="tabpanel" aria-labelledby="pills-evaluar-tab" [hidden]="disableOpcionesProfesor">
                 <app-evaluar-asignatura></app-evaluar-asignatura>
