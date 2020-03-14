@@ -638,9 +638,6 @@ export class BlockchainService {
   }
 
   async matricularEnAsignatura(addressFrom: string, universidad: string, asignatura: string, curso: string) {
-    // matricular(address universidad, string memory cursoAcademico)
-    
-    
     const contratoAsignatura = new this.web3.eth.Contract(
       asignaturaTokenABI,
       asignatura
