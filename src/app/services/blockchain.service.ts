@@ -366,6 +366,30 @@ export class BlockchainService {
     }) as Promise<any>;
   }
 
+  async calcularWeis(addressFrom: string, universidad: string, tokens: number): Promise<any> {
+      // Estimar el gas necesario
+    const estimatedGas = await this.estadoInstance.methods.calcularCreditosToWeis(
+      universidad, tokens
+    ).estimateGas({from: addressFrom});
+  
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.estadoInstance.methods.calcularCreditosToWeis(
+        universidad, tokens
+      ).call({
+        from: addressFrom,
+        gas: estimatedGas + 1
+      }, (error: any, weis: any) => {
+        if (error) {
+          this.consola$.next('Error: ' + error);
+          reject(0);
+        } else {
+          resolve(weis);
+        }
+      });
+    }) as Promise<any>;
+  }
+  
 
 
 }

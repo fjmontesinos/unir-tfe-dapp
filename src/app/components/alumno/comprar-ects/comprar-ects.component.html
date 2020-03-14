@@ -10,24 +10,21 @@
     <div class="col-3">
         Universidad :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="universidad">
+            <option *ngFor="let u of universidades" [value]="u.address">{{u.nombre}}</option>
         </select>
-    </div>
-    <div class="col-6">
-        UNIR
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
-        Créditos :
+        Tokens ECTS :
     </div>
     <div class="col-3">
-        <input class="form-control" type="text" name="creditos" value="" />
+        <input class="form-control" type="number" [(ngModel)]="tokens" />
     </div>
     <div class="col-6">
-        <button class="btn btn-info">Calcular Weis</button>&nbsp;
+        <button class="btn btn-info" (click)="calcularWeis()">Calcular Weis</button>&nbsp;
         <button class="btn btn-primary" (click)="comprarTokens()">Comprar ECTS</button>
     </div>
 </div>
@@ -35,8 +32,8 @@
     <div class="col-3">
         Weis Necesarios :
     </div>
-    <div class="col-9">
-        68000000000
+    <div class="col-6">
+        <input class="form-control" type="number" disabled [(ngModel)]="weis" />
     </div>
 </div>
 
