@@ -123,10 +123,6 @@ export class AppComponent implements OnDestroy, OnInit {
     this.consola = '';
   }
 
-  pendienteDesarrollar() {
-    this.consola +=  '<pre>En desarrollo</pre>';
-
-  }
   /**
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
    */
@@ -136,6 +132,8 @@ export class AppComponent implements OnDestroy, OnInit {
 
   async registrarUniversidadesEnAsignatura() {
     await this.blockchainService.registrarUniversidades(this.selectedAccount);
+
+    window.location.reload();
   }
 
   /**
