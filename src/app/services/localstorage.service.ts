@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LOCAL_STORAGE_KEY_MATRICULAS, LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS } from '../config/blockchain.dapp.config';
 import {
   LOCAL_STORAGE_KEY_ESTADO,
   LOCAL_STORAGE_KEY_UNIVERSIDADES,
@@ -87,6 +88,60 @@ export class BlockchainLocalStorageService {
     }
 
     return null;
+  }
+
+  saveMatricula( item: any ) {
+    let items: Array<{
+      universidad: string;
+      profesor: string;
+      asignatura: string;
+      alumno: string;
+      curso: string;
+      id: number;
+    }>;
+    items = this.get(LOCAL_STORAGE_KEY_MATRICULAS);
+    if (items === null) {
+      items = [];
+    }
+    items.push(item);
+    this.save(LOCAL_STORAGE_KEY_MATRICULAS, items);
+  }
+
+  getTokenId(profesor: string, alumno: string, asignatura: string){
+    let matriculas = this.get(LOCAL_STORAGE_KEY_MATRICULAS);
+    for( let i = 0; i < matriculas.length; i++ ) {
+      if ( matriculas[i].profesor === profesor &&
+        matriculas[i].alumno === alumno &&
+        matriculas[i].asignatura === asignatura) {
+          return matriculas[i].id;
+        }
+    }
+    return 0;
+  }
+
+  saveMatriculaEvaluada(profesor: string, alumno: string, asignatura: string, nota: number){
+    let matriculas = this.get(LOCAL_STORAGE_KEY_MATRICULAS);
+    let indice: number;
+    for( let i = 0; i < matriculas.length; i++ ) {
+      if ( matriculas[i].profesor === profesor &&
+        matriculas[i].alumno === alumno &&
+        matriculas[i].asignatura === asignatura) {
+          matriculas[i].nota = nota;
+          indice = i;
+          break;
+        }
+    }
+    let mEvaluada = matriculas[indice];
+    matriculas.splice(indice, 1);
+    this.save(LOCAL_STORAGE_KEY_MATRICULAS, matriculas);
+
+    // actualizar el array de matrículas evaluadas
+    let matriculasEvaluadas = this.get(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS);
+    if (matriculasEvaluadas === null) {
+      matriculasEvaluadas = [];
+    }
+    matriculasEvaluadas.push(mEvaluada);
+    this.save(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS, matriculasEvaluadas);
   }
 
 }

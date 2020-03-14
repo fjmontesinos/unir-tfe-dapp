@@ -27,6 +27,7 @@ export const LOCAL_STORAGE_KEY_ENTIDADES_REG = 'entidades-registradas';
 export const LOCAL_STORAGE_KEY_ASIGNATURAS = 'asignaturas';
 export const LOCAL_STORAGE_KEY_UNIVERSIDADES_REG = 'universidades-registradas';
 export const LOCAL_STORAGE_KEY_MATRICULAS = 'matriculas';
+export const LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS = 'matriculas-evaluadas';
 
 // Direcciones de los diferentes, usuarios
 // .......................................................

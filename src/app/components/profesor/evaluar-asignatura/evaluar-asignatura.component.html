@@ -7,28 +7,37 @@
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
-        Asignatura :
+        Asignaturas :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="asignatura">
+            <option *ngFor="let a of asignaturas" [value]="a.address">
+                {{a.nombre}} ( {{a.simbolo}} ) - Exp: {{ a.experimentabilidad }}  - Créditos: {{ a.creditos }}
+            </option>
         </select>
-    </div>
-    <div class="col-6">
-        Desarrollo de Aplicaciones Blockchain (DBC)
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
         Alumno :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-6">
+        <select class="form-control" [(ngModel)]="alumno">
+            <option *ngFor="let a of alumnos" [value]="a.address">
+                {{a.nombre}} {{ a.apellidos }}
+            </option>
         </select>
     </div>
-    <div class="col-6">
-        Javier Montesinos
+    <div class="col-3">
+        <button class="btn btn-info" (click)="obtenerTokenId()">Obtener Token ID</button>
+    </div>
+</div>
+<div class="row m-2 align-items-center">
+    <div class="col-3">
+        Token Id :
+    </div>
+    <div class="col-3">
+        <input class="form-control" type="text" disabled [(ngModel)]="tokenId" />
     </div>
 </div>
 <div class="row m-2 align-items-center">
@@ -36,7 +45,7 @@
         Nota :
     </div>
     <div class="col-3">
-        <input class="form-control" type="text" name="creditos" value="" />
+        <input class="form-control" type="text" [(ngModel)]="nota" />
     </div>
     <div class="col-6">
         <span>(0 - 1000, 1000 = 10)</span>
@@ -44,6 +53,22 @@
 </div>
 <div class="row m-2 align-items-center justify-content-end">
     <div class="col-9">
-        <button class="btn btn-primary">Evaluar Asignatura</button>
+        <button class="btn btn-primary" (click)="evaluar()">Evaluar Asignatura</button>
     </div>
 </div>
+
+<ng-template #evaluarModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Evaluar Asignatura</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Para confirmar el registro on-chain de la nota del alumno seǵun su selección, pulse Aceptar para continuar.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ngbAutofocus (click)="modal.close('ok')"><i class="ik ik-check-circle"></i>Aceptar</button>
+            <button type="button" class="btn btn-secondary" (click)="modal.close('cancel')"><i class="ik ik-x-circle"></i>Cancelar</button>
+        </div>
+    </div>
+</ng-template>

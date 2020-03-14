@@ -641,6 +641,13 @@ export class BlockchainService {
     );
   }
 
+  /**
+   * Matricularse un alumno en una asignatura
+   * @param addressFrom
+   * @param universidad
+   * @param asignatura
+   * @param curso
+   */
   async matricularEnAsignatura(addressFrom: string, universidad: string, asignatura: string, curso: string) {
     const contratoAsignatura = new this.web3.eth.Contract(
       asignaturaTokenABI,
@@ -659,25 +666,7 @@ export class BlockchainService {
           curso: result.returnValues.curso,
           id: result.returnValues.matriculaId.toString()
         };
-        let items: Array<{
-          universidad: string;
-          profesor: string;
-          asignatura: string;
-          alumno: string;
-          curso: string;
-          id: number;
-        }>;
-        items = this.blockchainLocalStorage.get(
-          LOCAL_STORAGE_KEY_MATRICULAS
-        );
-        if (items === null) {
-          items = [];
-        }
-        items.push(item);
-        this.blockchainLocalStorage.save(
-          LOCAL_STORAGE_KEY_MATRICULAS,
-          items
-        );
+        this.blockchainLocalStorage.saveMatricula(item);
       } else {
         this.consola$.next("Error: " + error);
       }
@@ -698,6 +687,41 @@ export class BlockchainService {
           this.consola$.next("Error: " + error);
         } else {
           this.getBalanceECTSToken(addressFrom);
+        }
+      }
+    );
+  }
+
+  /**
+   * Evaluar a un alumno una asignatura para registrar on-chain
+   * @param addressFrom
+   * @param asignatura
+   * @param alumno
+   * @param tokenId
+   * @param nota
+   */
+  async evaluarAsignatura(addressFrom: string, asignatura: string, alumno: string, tokenId: number, nota: number) {
+    const contratoAsignatura = new this.web3.eth.Contract(
+      asignaturaTokenABI,
+      asignatura
+    );
+
+    // Estimar el gas necesario
+    const estimatedGas = await contratoAsignatura.methods.evaluar(alumno, tokenId, nota)
+      .estimateGas({ from: addressFrom });
+
+    // realizar la matrícula del alumno en la asignatura
+    contratoAsignatura.methods.evaluar(alumno, tokenId, nota).send(
+      {
+        from: addressFrom,
+        gas: estimatedGas + 1
+      },
+      (error: any, r: any) => {
+        if (error) {
+          this.consola$.next("Error: " + error);
+        } else {
+          // registrar en local storage
+          this.blockchainLocalStorage.saveMatriculaEvaluada(addressFrom, alumno, asignatura, nota);
         }
       }
     );
