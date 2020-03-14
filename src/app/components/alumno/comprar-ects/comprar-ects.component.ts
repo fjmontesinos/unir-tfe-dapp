@@ -70,7 +70,6 @@ export class ComprarECTSComponent implements OnInit {
   }
 
   async comprar() {
-    console.log(this.selectedAccount + ' - ' + this.tokens * ECTS_DECIMALS + ' - ' + this.weis);
     await this.blockchainService.comprarTokens(this.selectedAccount, this.universidad, this.tokens * ECTS_DECIMALS, this.weis);
   }
 

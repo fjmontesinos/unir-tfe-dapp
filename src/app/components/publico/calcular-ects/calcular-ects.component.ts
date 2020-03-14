@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { 
-  EXPERIMENTABILIDAD, 
-  ANIOS_MATRICULA, 
-  LOCAL_STORAGE_KEY_UNIVERSIDADES, 
-  ECTS_DECIMALS, 
+import {
+  EXPERIMENTABILIDAD,
+  ANIOS_MATRICULA,
+  LOCAL_STORAGE_KEY_UNIVERSIDADES,
+  ECTS_DECIMALS,
   LOCAL_STORAGE_KEY_ASIGNATURAS } from '../../../config/blockchain.dapp.config';
 import { BlockchainLocalStorageService } from '../../../services/localstorage.service';
 import { BlockchainService } from '../../../services/blockchain.service';
