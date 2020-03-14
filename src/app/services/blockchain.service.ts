@@ -85,7 +85,8 @@ export class BlockchainService {
 
           // salvar en el localstorage
           const item = {address: result.returnValues.asignatura, nombre: result.returnValues.nombre,
-              simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos.toString()};
+              simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos.toString(),
+              experimentabilidad: parseInt(result.returnValues.experimentabilidad.toString()) + 1};
           let items: Array<{address: string, nombre: string, simbolo: string, creditos: number}>;
           items = this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
           if ( items === null ) {

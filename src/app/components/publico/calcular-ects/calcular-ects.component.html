@@ -61,7 +61,9 @@
     </div>
     <div class="col-9">
         <select class="form-control">
-            <option *ngFor="let u of asignaturas" [value]="u.address">{{u.nombre}} ( {{u.simbolo}}) - Créditos: {{ u.creditos.toString() }}</option>
+            <option *ngFor="let u of asignaturas" [value]="u.address">
+                {{u.nombre}} ( {{u.simbolo}} ) - Exp: {{ u.experimentabilidad }}  - Créditos: {{ u.creditos }}
+            </option>
         </select>
     </div>
 </div>

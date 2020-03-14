@@ -23,18 +23,16 @@ export class CalcularEctsComponent implements OnInit {
   @Input() creditos: number;
   @Input() ects: number;
 
-  constructor(private blockchainService: BlockchainService, private blockchainLocalStorageService: BlockchainLocalStorageService) {
+  constructor(private blockchainService: BlockchainService, private blockchainLocalStorageService: BlockchainLocalStorageService) {}
+
+  ngOnInit() {
     this.experimentabilidad = EXPERIMENTABILIDAD;
     this.anios = ANIOS_MATRICULA;
     this.universidades = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
     this.asignaturas = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
   }
 
-  ngOnInit() {
-  }
-
   async calcularECTS() {
-    let calcular = false;
     let mensajeError = '';
     if ( this.universidad === undefined ) {
       mensajeError += ' - Debe seleccionar la universidad';
