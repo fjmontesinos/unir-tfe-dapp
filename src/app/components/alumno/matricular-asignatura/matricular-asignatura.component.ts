@@ -28,9 +28,13 @@ export class MatricularAsignaturaComponent implements OnInit {
 
   ngOnInit() {
     this.universidades = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
-    this.universidad = this.universidades[0].address;
+    if (this.universidades !== null) {
+      this.universidad = this.universidades[0].address;
+    }
     this.asignaturas = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
-    this.asignatura = this.asignaturas[0].address;
+    if (this.asignaturas !== null) {
+      this.asignatura = this.asignaturas[0].address;
+    }
     this.curso = '2019 / 2020';
   }
 

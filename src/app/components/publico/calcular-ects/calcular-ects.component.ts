@@ -35,7 +35,9 @@ export class CalcularEctsComponent implements OnInit {
     this.anios = ANIOS_MATRICULA;
     this.anio = this.anios[0].id;
     this.universidades = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES);
-    this.universidad = this.universidades[0].address;
+    if (this.universidades !== null) {
+      this.universidad = this.universidades[0].address;
+    }
     this.asignaturas = this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
   }
 
