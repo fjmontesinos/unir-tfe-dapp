@@ -13,6 +13,12 @@ export const ESTADO_NOMBRE = 'Estado';
 export const WEIS_POR_ETHER = 1000000000000000000;
 export const ECTS_DECIMALS = 10000;
 
+export const EXPERIMENTABILIDAD = [{id: 0, label: 'Exp. Grado 1'}, {id: 1, label: 'Exp. Grado 2'},
+    {id: 2, label: 'Exp. Grado 3'}, {id: 3, label: 'Exp. Grado >= 4'}];
+
+export const ANIOS_MATRICULA = [{id: 0, label: '1º Año'}, {id: 1, label: '2º Año'},
+    {id: 2, label: '3º Año'}, {id: 3, label: '4º Año o superior'}];
+
 export const LOCAL_STORAGE_KEY_ESTADO = 'estado';
 export const LOCAL_STORAGE_KEY_UNIVERSIDADES = 'universidades';
 export const LOCAL_STORAGE_KEY_PROFESORES = 'profesores';

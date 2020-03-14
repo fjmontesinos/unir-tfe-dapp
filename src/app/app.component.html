@@ -198,7 +198,7 @@
         </ul>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-calcular" role="tabpanel" aria-labelledby="pills-calcular-tab">
-                <app-calcular-ects></app-calcular-ects>
+                <app-calcular-ects [selectedAccount]="selectedAccount"></app-calcular-ects>
             </div>
             <div class="tab-pane fade" id="pills-comprar" role="tabpanel" aria-labelledby="pills-comprar-tab" [hidden]="disableOpcionesAlumno">
                 <app-comprar-ects></app-comprar-ects>

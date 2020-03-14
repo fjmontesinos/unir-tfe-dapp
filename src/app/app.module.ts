@@ -10,6 +10,7 @@ import { CalcularEctsComponent } from './components/publico/calcular-ects/calcul
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localeEs, 'es');
 
@@ -24,7 +25,8 @@ registerLocaleData(localeEs, 'es');
   ],
   imports: [
     BrowserModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'es'}

@@ -10,26 +10,30 @@
     <div class="col-3">
         Universidad :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="universidad">
+            <option *ngFor="let u of universidades" [value]="u.address">{{u.nombre}}</option>
         </select>
-    </div>
-    <div class="col-6">
-        UNIR
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
-        Asignatura :
+        Experimentabilidad :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="exp">
+            <option *ngFor="let a of experimentabilidad" [value]="a.id">{{a.label}}</option>
         </select>
     </div>
-    <div class="col-6">
-        Desarrollo de Aplicaciones Blockchain (DBC)
+</div>
+<div class="row m-2 align-items-center">
+    <div class="col-3">
+        Año de matrícula :
+    </div>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="anio">
+            <option *ngFor="let a of anios" [value]="a.id">{{a.label}}</option>
+        </select>
     </div>
 </div>
 <div class="row m-2 align-items-center">
@@ -37,17 +41,27 @@
         Créditos :
     </div>
     <div class="col-3">
-        <input class="form-control" type="text" name="creditos" value="" />
+        <input class="form-control" type="number" [(ngModel)]="creditos" />
     </div>
     <div class="col-6">
-        <button class="btn btn-info">Calcular ECTS</button>
+        <button class="btn btn-info" (click)="calcularECTS()">Calcular ECTS</button>
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
         Tokens ECTS Necesarios :
     </div>
+    <div class="col-3">
+        <input class="form-control" type="number" disabled [(ngModel)]="ects" />
+    </div>
+</div>
+<div class="row m-2 align-items-center">
+    <div class="col-3">
+        Asignaturas :
+    </div>
     <div class="col-9">
-        1200000
+        <select class="form-control">
+            <option *ngFor="let u of asignaturas" [value]="u.address">{{u.nombre}} ( {{u.simbolo}}) - Créditos: {{ u.creditos.toString() }}</option>
+        </select>
     </div>
 </div>

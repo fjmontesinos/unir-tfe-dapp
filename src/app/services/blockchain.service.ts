@@ -85,7 +85,7 @@ export class BlockchainService {
 
           // salvar en el localstorage
           const item = {address: result.returnValues.asignatura, nombre: result.returnValues.nombre,
-              simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos};
+              simbolo: result.returnValues.simbolo, creditos: result.returnValues.creditos.toString()};
           let items: Array<{address: string, nombre: string, simbolo: string, creditos: number}>;
           items = this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ASIGNATURAS);
           if ( items === null ) {
@@ -339,6 +339,31 @@ export class BlockchainService {
   }
 
 
+  async calcularECTS(addressFrom: string, universidad: string,
+      experimentabilidad: number, anioMatricula: number, creditos: number): Promise<any> {
+
+        // Estimar el gas necesario
+    const estimatedGas = await this.estadoInstance.methods.calcularECTSTokensParaAsignatura(
+      universidad, experimentabilidad, anioMatricula, creditos
+    ).estimateGas({from: addressFrom});
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.estadoInstance.methods.calcularECTSTokensParaAsignatura(
+        universidad, experimentabilidad, anioMatricula, creditos
+      ).call({
+        from: addressFrom,
+        gas: estimatedGas + 1
+      }, (error: any, tokens: any) => {
+        if (error) {
+          this.consola$.next('Error: ' + error);
+          reject(0);
+        } else {
+          resolve(tokens);
+        }
+      });
+    }) as Promise<any>;
+  }
 
 
 
