@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-comprar-ects',
@@ -7,9 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ComprarECTSComponent implements OnInit {
 
-  constructor() { }
+  @ViewChild('comprarEctsModal', {static: false}) modal: TemplateRef<any>;
+
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
+  }
+
+  comprarTokens() {
+    this.modalService.open(this.modal).result.then( (r) => {
+      if (r === 'ok') {
+        console.log('Vamos a comprar Tokens');
+      }
+
+    }, error => {
+      console.log(error);
+    });
   }
 
 }

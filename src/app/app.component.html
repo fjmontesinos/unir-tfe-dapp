@@ -130,7 +130,7 @@
 
         <h4>{{ title }}</h4>
 
-        <div class="row align-items-center">
+        <div class="row align-items-top mt-3">
             <div clas="col-3">
                 Seleccione la cuenta de acceso:
             </div>
@@ -146,7 +146,11 @@
                 </div>
             </div>
             <div class="col-7 text-right" [hidden]="!isParametrizado()">
-                Bienvenid@ {{usuario.nombre}} ( {{ selectedAccount }})
+                <p>
+                    Bienvenid@ {{usuario.nombre}} ( {{ selectedAccount }})
+                    <br /> {{ tokensUsuario | number }} ECTS ( {{ etherUsuario | number : '.2-2'}} ETH)
+
+                </p>
             </div>
             <div class="col-7 text-right" [hidden]="isParametrizado()">
                 Pendiente de Parametrizar
@@ -162,6 +166,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row" [hidden]="isParametrizado() || disableOpcionesEstado">
             <div class="col text-center">
                 <button class="btn btn-danger" name="parametrizar" (click)="inicializarEntidades()" [disabled]="isEntidadesInicializadas()">Inicializar Entidades</button>&nbsp;&nbsp;&nbsp;
@@ -172,7 +177,7 @@
 
 
     <!-- Opciones de la aplicación -->
-    <div class="container mt-3" [hidden]="! isParametrizado()">
+    <div class="container" [hidden]="! isParametrizado()">
 
         <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">

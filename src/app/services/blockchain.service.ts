@@ -29,13 +29,13 @@ declare let window: any;
 @Injectable({
   providedIn: 'root'
 })
-export class DiplomasBlockchainService {
+export class BlockchainService {
 
   public consola$ = new Subject<string>();
-
-  private totalIdentidadesDesplegadas = 0;
   private web3: any;
   public asignaturas = new Map<string, any>();
+  private estadoInstance: any;
+  private ectsTokenInstance: any;
 
   constructor(private blockchainLocalStorage: BlockchainLocalStorageService) {
     this.init();
@@ -67,9 +67,6 @@ export class DiplomasBlockchainService {
     // inicializar las instancias de los sc que representan las identidades digitales
     this.initSmartContracts();
   }
-
-  private estadoInstance:any;
-  private ectsTokenInstance:any;
 
   async initSmartContracts() {
     // Verificar si el sc estado está en la red blockchain
@@ -282,7 +279,6 @@ export class DiplomasBlockchainService {
    * @param _profesor
    */
   async registrarUnivesidadEnAsignatura(addressFrom: string, asignatura: string, universidad: string, profesor: string) {
-    console.log(asignatura);
     // Estimar el gas necesario
     const estimatedGas = await this.asignaturas.get(asignatura).methods.registrarUniversidadProfesor(
       universidad, profesor
@@ -302,7 +298,44 @@ export class DiplomasBlockchainService {
         }
     });
 
+  }
 
+  async getBalanceECTSToken(cuenta: string): Promise<any>{
+    // Estimar el gas necesario
+    const estimatedGas = await this.ectsTokenInstance.methods.balanceOf(
+      cuenta
+    ).estimateGas({from: cuenta});
+
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.ectsTokenInstance.methods.balanceOf(
+        cuenta
+      ).call({
+        from: cuenta,
+        gas: estimatedGas + 1
+      }, (error: any, balance: any) => {
+        if (error) {
+          this.consola$.next('Error: ' + error);
+          reject(0);
+        } else {
+          resolve(balance);
+        }
+      });
+    }) as Promise<any>;
+  }
+
+  async getBalanceEther(cuenta: string): Promise<any>{
+    // ejecutar el añadido de la claim en la identidad del alumno
+    return new Promise((resolve, reject) => {
+      this.web3.eth.getBalance(cuenta, (error: any, balance: any) => {
+        if (error) {
+          this.consola$.next('Error: ' + error);
+          reject(0);
+        } else {
+          resolve(balance);
+        }
+      });
+    }) as Promise<any>;
   }
 
 

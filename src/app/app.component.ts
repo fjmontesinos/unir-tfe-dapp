@@ -1,5 +1,5 @@
-import { Component, OnDestroy, NgZone } from '@angular/core';
-import { DiplomasBlockchainService } from './services/blockchain.service';
+import { Component, OnDestroy, NgZone, OnInit } from '@angular/core';
+import { BlockchainService } from './services/blockchain.service';
 import { Title } from '@angular/platform-browser';
 import {
   accountEstado,
@@ -13,31 +13,34 @@ import {
   DAPP_TITULO } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
 import { BlockchainLocalStorageService } from './services/localstorage.service';
+import { WEIS_POR_ETHER, ECTS_DECIMALS } from './config/blockchain.dapp.config';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   consola$: Subscription;
   title = DAPP_TITULO;
   accounts = [accountEstado, accountUniversidad1, accountProfesor, accountAlumno, accountUniversidad2];
-  selectedAccount = this.accounts[0];
+  selectedAccount = accountEstado;
   consola = '';
   disableOpcionesEstado = true;
   disableOpcionesUniversidad = true;
   disableOpcionesProfesor = true;
   disableOpcionesAlumno = true;
   usuario: any;
+  tokensUsuario: number;
+  etherUsuario: number;
 
-  constructor(private diplomasBlockchainService: DiplomasBlockchainService,
+  constructor(private blockchainService: BlockchainService,
               private blockchainLocalStorageService: BlockchainLocalStorageService,
               private ngZone: NgZone,
               private titleServe: Title) {
                 this.titleServe.setTitle(this.title);
-                this.setSecurityByAccount();
-                this.consola$ = this.diplomasBlockchainService.getConsola$().subscribe( (_mensaje) => {
+
+                this.consola$ = this.blockchainService.getConsola$().subscribe( (_mensaje) => {
                   this.ngZone.run( () => {
                     this.consola +=  '<pre>' + _mensaje + '</pre>';
                     document.getElementById('consola').scrollTop +=
@@ -46,11 +49,20 @@ export class AppComponent implements OnDestroy {
                 });
               }
 
-  onChange(newValue) {
+  ngOnInit() {
+    this.setSecurityByAccount();
+  }
+
+  async onChange(newValue) {
     // establecer la nueva cuenta seleccionada
     this.selectedAccount = newValue;
     // aplicar la seguridad en base a la nueva cuenta seleccionada
     this.setSecurityByAccount();
+    // recuperar los tokens de la cuenta
+    const tokens = await this.blockchainService.getBalanceECTSToken(this.selectedAccount);
+    this.tokensUsuario = parseInt(tokens) / ECTS_DECIMALS;
+    const weis = await this.blockchainService.getBalanceEther(this.selectedAccount);
+    this.etherUsuario = parseInt(weis) / WEIS_POR_ETHER;
   }
 
   async ngOnDestroy() {
@@ -67,18 +79,20 @@ export class AppComponent implements OnDestroy {
     this.disableOpcionesUniversidad = true;
     this.disableOpcionesEstado = true;
 
-    if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) || (this.selectedAccount === accountEstado) ) {
-      this.disableOpcionesEstado = false;
-      this.usuario = {nombre: ESTADO_NOMBRE};
-    } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
-      this.disableOpcionesUniversidad = false;
-      this.usuario = this.blockchainLocalStorageService.getUniversidad(this.selectedAccount);
-    } else if ( this.blockchainLocalStorageService.isProfesor(this.selectedAccount) ) {
-      this.disableOpcionesProfesor = false;
-      this.usuario = this.blockchainLocalStorageService.getProfesor(this.selectedAccount);
-    } else if ( this.blockchainLocalStorageService.isAlumno(this.selectedAccount) ) {
-      this.disableOpcionesAlumno = false;
-      this.usuario = this.blockchainLocalStorageService.getAlumno(this.selectedAccount);
+    if (this.selectedAccount !== undefined) {
+      if ( this.blockchainLocalStorageService.isEstado(this.selectedAccount) || (this.selectedAccount === accountEstado) ) {
+        this.disableOpcionesEstado = false;
+        this.usuario = {nombre: ESTADO_NOMBRE};
+      } else if ( this.blockchainLocalStorageService.isUniversidad(this.selectedAccount) ) {
+        this.disableOpcionesUniversidad = false;
+        this.usuario = this.blockchainLocalStorageService.getUniversidad(this.selectedAccount);
+      } else if ( this.blockchainLocalStorageService.isProfesor(this.selectedAccount) ) {
+        this.disableOpcionesProfesor = false;
+        this.usuario = this.blockchainLocalStorageService.getProfesor(this.selectedAccount);
+      } else if ( this.blockchainLocalStorageService.isAlumno(this.selectedAccount) ) {
+        this.disableOpcionesAlumno = false;
+        this.usuario = this.blockchainLocalStorageService.getAlumno(this.selectedAccount);
+      }
     }
   }
 
@@ -97,11 +111,11 @@ export class AppComponent implements OnDestroy {
    * Desplegar sobre la red blockchain los sc necesarios para la aplicación
    */
   async inicializarEntidades() {
-    await this.diplomasBlockchainService.inicializarEntidades(this.selectedAccount);
+    await this.blockchainService.inicializarEntidades(this.selectedAccount);
   }
 
   async registrarUniversidadesEnAsignatura() {
-    await this.diplomasBlockchainService.registrarUniversidades(this.selectedAccount);
+    await this.blockchainService.registrarUniversidades(this.selectedAccount);
   }
 
   /**
@@ -110,7 +124,7 @@ export class AppComponent implements OnDestroy {
    * si ya han sido desplegados.
    */
   isParametrizado() {
-    return this.diplomasBlockchainService.isParametrizado();
+    return this.blockchainService.isParametrizado();
   }
 
   isEntidadesInicializadas() {

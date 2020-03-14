@@ -28,7 +28,7 @@
     </div>
     <div class="col-6">
         <button class="btn btn-info">Calcular Weis</button>&nbsp;
-        <button class="btn btn-primary">Comprar ECTS</button>
+        <button class="btn btn-primary" (click)="comprarTokens()">Comprar ECTS</button>
     </div>
 </div>
 <div class="row m-2 align-items-center">
@@ -39,3 +39,19 @@
         68000000000
     </div>
 </div>
+
+<ng-template #comprarEctsModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Comprar ECTS</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro de comprar los créditos indicados? Pulse Aceptar para continuar.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ngbAutofocus (click)="modal.close('ok')"><i class="ik ik-check-circle"></i>Aceptar</button>
+            <button type="button" class="btn btn-secondary" (click)="modal.close('cancel')"><i class="ik ik-x-circle"></i>Cancelar</button>
+        </div>
+    </div>
+</ng-template>
