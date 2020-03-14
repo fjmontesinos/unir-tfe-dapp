@@ -54,6 +54,12 @@ export const asignaturaTokenABI = [
       {
         "indexed": false,
         "internalType": "address",
+        "name": "asignatura",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "alumno",
         "type": "address"
       },

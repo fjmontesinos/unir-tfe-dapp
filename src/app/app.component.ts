@@ -133,7 +133,7 @@ export class AppComponent implements OnDestroy, OnInit {
   async registrarUniversidadesEnAsignatura() {
     await this.blockchainService.registrarUniversidades(this.selectedAccount);
 
-    window.location.reload();
+    // window.location.reload();
   }
 
   /**

@@ -8,7 +8,8 @@ import {
   LOCAL_STORAGE_KEY_ASIGNATURAS,
   LOCAL_STORAGE_KEY_ENTIDADES_REG,
   LOCAL_STORAGE_KEY_UNIVERSIDADES_REG,
-  LOCAL_STORAGE_KEY_ESTADO
+  LOCAL_STORAGE_KEY_ESTADO,
+  LOCAL_STORAGE_KEY_MATRICULAS
 } from "../config/blockchain.dapp.config";
 import { Subject, Observable } from "rxjs";
 import {
@@ -645,6 +646,43 @@ export class BlockchainService {
       asignaturaTokenABI,
       asignatura
     );
+
+    // Añadir evento
+    contratoAsignatura.events.AlumnoMatriculado({}, (error, result) => {
+      if (!error) {
+        // salvar en el localstorage
+        const item = {
+          universidad: result.returnValues.asignatura,
+          profesor: result.returnValues.profesor,
+          asignatura: result.returnValues.asignatura,
+          alumno: result.returnValues.alumno,
+          curso: result.returnValues.curso,
+          id: result.returnValues.matriculaId.toString()
+        };
+        let items: Array<{
+          universidad: string;
+          profesor: string;
+          asignatura: string;
+          alumno: string;
+          curso: string;
+          id: number;
+        }>;
+        items = this.blockchainLocalStorage.get(
+          LOCAL_STORAGE_KEY_MATRICULAS
+        );
+        if (items === null) {
+          items = [];
+        }
+        items.push(item);
+        this.blockchainLocalStorage.save(
+          LOCAL_STORAGE_KEY_MATRICULAS,
+          items
+        );
+      } else {
+        this.consola$.next("Error: " + error);
+      }
+    });
+
     // Estimar el gas necesario
     const estimatedGas = await contratoAsignatura.methods.matricular(universidad, curso)
       .estimateGas({ from: addressFrom });
