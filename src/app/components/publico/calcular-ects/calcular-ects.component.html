@@ -2,10 +2,22 @@
 
 <div class="row">
     <div class="col">
-        Mediante esta funcionalidad puede calcular los tokens ECTS necesarios para adquirir un número de créditos necesarios para matricularse en una asignatura en una universidad
+        Mediante esta funcionalidad puede calcular los tokens ECTS necesarios para matricularse en una asignatura en una universidad concreta basado en el año de experimentabilidad de la asignatura o en el año de matriculación. Para ello se muestra en el desplegable
+        de asignaturas las asignaturas disponibles para verificar su experimentabilidad y los créditos necesarios.
     </div>
 </div>
-
+<div class="row m-2 align-items-center">
+    <div class="col-3">
+        Asignaturas :
+    </div>
+    <div class="col-9">
+        <select class="form-control">
+            <option *ngFor="let u of asignaturas" [value]="u.address">
+                {{u.nombre}} ( {{u.simbolo}} ) - Exp: {{ u.experimentabilidad }}  - Créditos: {{ u.creditos }}
+            </option>
+        </select>
+    </div>
+</div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
         Universidad :
@@ -53,17 +65,5 @@
     </div>
     <div class="col-3">
         <input class="form-control" type="number" disabled [(ngModel)]="ects" />
-    </div>
-</div>
-<div class="row m-2 align-items-center">
-    <div class="col-3">
-        Asignaturas :
-    </div>
-    <div class="col-9">
-        <select class="form-control">
-            <option *ngFor="let u of asignaturas" [value]="u.address">
-                {{u.nombre}} ( {{u.simbolo}} ) - Exp: {{ u.experimentabilidad }}  - Créditos: {{ u.creditos }}
-            </option>
-        </select>
     </div>
 </div>
