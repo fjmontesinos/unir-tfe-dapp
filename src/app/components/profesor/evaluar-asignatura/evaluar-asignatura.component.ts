@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BlockchainService } from '../../../services/blockchain.service';
 import { BlockchainLocalStorageService } from '../../../services/localstorage.service';
 import { LOCAL_STORAGE_KEY_ASIGNATURAS } from 'src/app/config/blockchain.dapp.config';
-import { LOCAL_STORAGE_KEY_ALUMNOS, LOCAL_STORAGE_KEY_MATRICULAS } from '../../../config/blockchain.dapp.config';
+import { LOCAL_STORAGE_KEY_ALUMNOS, LOCAL_STORAGE_KEY_MATRICULAS, NOTAS_DECIMALS } from '../../../config/blockchain.dapp.config';
 
 @Component({
   selector: 'app-evaluar-asignatura',
@@ -82,7 +82,9 @@ export class EvaluarAsignaturaComponent implements OnInit {
    * Ejecuta la evaluación del alumno en la asignatura
    */
   async ejecutarEvaluar() {
-    await this.blockchainService.evaluarAsignatura(this.selectedAccount, this.asignatura, this.alumno, this.tokenId, this.nota);
+    await this.blockchainService.evaluarAsignatura(this.selectedAccount, this.asignatura,
+                                                   this.alumno, this.tokenId,
+                                                   this.nota * NOTAS_DECIMALS);
   }
 
 }
