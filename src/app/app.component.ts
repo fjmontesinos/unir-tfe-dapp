@@ -13,7 +13,7 @@ import {
   DAPP_TITULO } from './config/blockchain.dapp.config';
 import { Subscription } from 'rxjs';
 import { BlockchainLocalStorageService } from './services/localstorage.service';
-import { WEIS_POR_ETHER, ECTS_DECIMALS } from './config/blockchain.dapp.config';
+import { WEIS_POR_ETHER, ECTS_DECIMALS, LOCAL_STORAGE_KEY_PROFESORES, LOCAL_STORAGE_KEY_APP_RECARGADA } from './config/blockchain.dapp.config';
 
 @Component({
   selector: 'app-root',
@@ -132,8 +132,12 @@ export class AppComponent implements OnDestroy, OnInit {
 
   async registrarUniversidadesEnAsignatura() {
     await this.blockchainService.registrarUniversidades(this.selectedAccount);
+  }
 
-    // window.location.reload();
+  recargarApp() {
+    this.blockchainLocalStorageService.save(LOCAL_STORAGE_KEY_APP_RECARGADA, true);
+
+    window.location.reload();
   }
 
   /**
@@ -151,6 +155,10 @@ export class AppComponent implements OnDestroy, OnInit {
 
   isUniversidadesRegistradas() {
     return (this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG) === true);
+  }
+
+  isAppRecargada() {
+    return (this.blockchainLocalStorageService.get(LOCAL_STORAGE_KEY_APP_RECARGADA) === true);
   }
 
 }

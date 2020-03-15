@@ -27,6 +27,7 @@ import { estadoABI } from "../contracts/estado.smart.contract";
 import { ectsTokenABI } from "../contracts/ectstoken.smart.contract";
 import { asignaturaTokenABI } from "../contracts/asignaturatoken.smart.contracts";
 import { BlockchainLocalStorageService } from "./localstorage.service";
+import { LOCAL_STORAGE_KEY_APP_RECARGADA } from '../config/blockchain.dapp.config';
 
 declare let window: any;
 
@@ -178,12 +179,10 @@ export class BlockchainService {
       this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_PROFESORES) !== null &&
       this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ALUMNOS) !== null &&
       this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ASIGNATURAS) !== null &&
-      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ENTIDADES_REG) ===
-        true &&
-      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG) ===
-        true &&
-      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ESTADO) ===
-        accountEstado
+      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ENTIDADES_REG) === true &&
+      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG) === true &&
+      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_APP_RECARGADA) === true &&
+      this.blockchainLocalStorage.get(LOCAL_STORAGE_KEY_ESTADO) === accountEstado
     );
   }
 

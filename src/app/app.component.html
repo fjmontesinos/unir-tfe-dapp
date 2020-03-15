@@ -134,8 +134,9 @@
 
         <div class="row" [hidden]="isParametrizado() || disableOpcionesEstado">
             <div class="col text-center">
-                <button class="btn btn-danger" name="parametrizar" (click)="inicializarEntidades()" [disabled]="isEntidadesInicializadas()">Inicializar Entidades</button>&nbsp;&nbsp;&nbsp;
-                <button class="btn btn-danger" name="registrarUniversidades" (click)="registrarUniversidadesEnAsignatura()" [disabled]="!isEntidadesInicializadas()">Registrar Universidades en Asignatura</button>
+                <button class="btn btn-danger" name="parametrizar" (click)="inicializarEntidades()" [disabled]="isEntidadesInicializadas()">Inicializar Entidades</button>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                <button class="btn btn-danger" name="registrarUniversidades" (click)="registrarUniversidadesEnAsignatura()" [disabled]="!isEntidadesInicializadas() || isUniversidadesRegistradas()">Registrar Universidades en Asignatura</button> &nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary" name="recargarApp" (click)="recargarApp()" [disabled]="!isUniversidadesRegistradas()">Recargar APP</button>
             </div>
         </div>
     </div>
