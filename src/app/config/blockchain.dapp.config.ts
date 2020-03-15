@@ -8,7 +8,7 @@
 export const RCP_URL_HTTP = 'http://localhost:8545';
 export const RCP_URL_WS = 'ws://localhost:8545';
 
-export const DAPP_TITULO = 'UNIR :: TFE - Digitalización Títulos Académicos';
+export const DAPP_TITULO = 'UNIR :: TFE - Títulos Académicos Tokenizados';
 export const ESTADO_NOMBRE = 'Estado';
 export const WEIS_POR_ETHER = 1000000000000000000;
 export const ECTS_DECIMALS = 10000;
