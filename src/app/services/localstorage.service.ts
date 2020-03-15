@@ -119,6 +119,16 @@ export class BlockchainLocalStorageService {
     return 0;
   }
 
+  getTokenIdAprobado(alumno: string, asignatura: string){
+    let matriculas = this.get(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS);
+    for( let i = 0; i < matriculas.length; i++ ) {
+      if (matriculas[i].alumno === alumno && matriculas[i].asignatura === asignatura && parseInt(matriculas[i].nota) >= 500) {
+          return matriculas[i].id;
+        }
+    }
+    return 0;
+  }
+
   saveMatriculaEvaluada(profesor: string, alumno: string, asignatura: string, nota: number){
     let matriculas = this.get(LOCAL_STORAGE_KEY_MATRICULAS);
     let indice: number;
@@ -142,6 +152,17 @@ export class BlockchainLocalStorageService {
     }
     matriculasEvaluadas.push(mEvaluada);
     this.save(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS, matriculasEvaluadas);
+  }
+
+  trasladarMatricula(asignatura: string, tokenId: number, universidad: string){
+    let matriculas = this.get(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS);
+    for( let i = 0; i < matriculas.length; i++ ) {
+      if ( matriculas[i].id === tokenId && matriculas[i].asignatura === asignatura ) {
+          matriculas[i].universidad = universidad;
+          break;
+        }
+    }
+    this.save(LOCAL_STORAGE_KEY_MATRICULAS_EVALUADAS, matriculas);
   }
 
 }

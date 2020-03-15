@@ -278,6 +278,13 @@ export class BlockchainService {
         accountUniversidad1,
         accountProfesor
       );
+
+      await this.registrarUnivesidadEnAsignatura(
+        addressFrom,
+        a,
+        accountUniversidad2,
+        accountProfesor
+      );
     }
 
     this.blockchainLocalStorage.save(LOCAL_STORAGE_KEY_UNIVERSIDADES_REG, true);
@@ -659,7 +666,7 @@ export class BlockchainService {
       if (!error) {
         // salvar en el localstorage
         const item = {
-          universidad: result.returnValues.asignatura,
+          universidad: result.returnValues.universidad,
           profesor: result.returnValues.profesor,
           asignatura: result.returnValues.asignatura,
           alumno: result.returnValues.alumno,
@@ -722,6 +729,40 @@ export class BlockchainService {
         } else {
           // registrar en local storage
           this.blockchainLocalStorage.saveMatriculaEvaluada(addressFrom, alumno, asignatura, nota);
+        }
+      }
+    );
+  }
+
+  /**
+   * Trasladar la matrícula de una asignatura aprobada a otra universidad
+   * @param addressFrom 
+   * @param asignatura 
+   * @param tokenId 
+   * @param universidad 
+   */
+  async trasladarAsignatura(addressFrom: string, asignatura: string, universidad: string, tokenId: number) {
+    const contratoAsignatura = new this.web3.eth.Contract(
+      asignaturaTokenABI,
+      asignatura
+    );
+
+    // Estimar el gas necesario
+    const estimatedGas = await contratoAsignatura.methods.trasladar(tokenId, universidad)
+      .estimateGas({ from: addressFrom });
+
+    // realizar la matrícula del alumno en la asignatura
+    contratoAsignatura.methods.trasladar(tokenId, universidad).send(
+      {
+        from: addressFrom,
+        gas: estimatedGas + 1
+      },
+      (error: any, r: any) => {
+        if (error) {
+          this.consola$.next("Error: " + error);
+        } else {
+          // registrar en local storage
+          this.blockchainLocalStorage.trasladarMatricula(asignatura, tokenId, universidad);
         }
       }
     );

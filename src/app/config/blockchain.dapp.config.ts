@@ -12,6 +12,7 @@ export const DAPP_TITULO = 'UNIR :: TFE - Digitalización Títulos Académicos';
 export const ESTADO_NOMBRE = 'Estado';
 export const WEIS_POR_ETHER = 1000000000000000000;
 export const ECTS_DECIMALS = 10000;
+export const NOTAS_DECIMALS = 100;
 
 export const EXPERIMENTABILIDAD = [{id: 0, label: 'Exp. Grado 1'}, {id: 1, label: 'Exp. Grado 2'},
     {id: 2, label: 'Exp. Grado 3'}, {id: 3, label: 'Exp. Grado >= 4'}];

@@ -2,37 +2,60 @@
 
 <div class="row">
     <div class="col">
-        Mediante esta funcionalidad puede solicitar el traslado de una asignatura a otra universidad
+        Mediante esta funcionalidad puede solicitar el traslado de una asignatura aprobada a otra universidad.
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
         Asignatura :
     </div>
-    <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="asignatura">
+            <option *ngFor="let a of asignaturas" [value]="a.address">
+                {{a.nombre}} ( {{a.simbolo}} ) - Exp: {{ a.experimentabilidad }}  - Créditos: {{ a.creditos }}
+            </option>
         </select>
-    </div>
-    <div class="col-6">
-        Desarrollo de Aplicaciones Blockchain (DBC)
     </div>
 </div>
 <div class="row m-2 align-items-center">
     <div class="col-3">
-        Universidad :
+        Token Id :
     </div>
     <div class="col-3">
-        <select class="form-control">
-            <option>0x...</option>
-        </select>
+        <input class="form-control" type="text" disabled [(ngModel)]="tokenId" />
     </div>
     <div class="col-6">
-        UNIR
+        <button class="btn btn-info" (click)="obtenerTokenId()">Obtener Token ID</button>
+    </div>
+</div>
+<div class="row m-2 align-items-center">
+    <div class="col-3">
+        Universidad Destino :
+    </div>
+    <div class="col-9">
+        <select class="form-control" [(ngModel)]="universidad">
+            <option *ngFor="let u of universidades" [value]="u.address">{{u.nombre}}</option>
+        </select>
     </div>
 </div>
 <div class="row m-2 align-items-center justify-content-end">
     <div class="col-9">
-        <button class="btn btn-primary">Trasladar Asignatura</button>
+        <button class="btn btn-primary" (click)="trasladar()">Trasladar Asignatura</button>
     </div>
 </div>
+
+<ng-template #trasladarModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Trasladar Asignatura</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro de trasladar la matrícula de la asignatura seleccionada? Pulse Aceptar para continuar.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ngbAutofocus (click)="modal.close('ok')"><i class="ik ik-check-circle"></i>Aceptar</button>
+            <button type="button" class="btn btn-secondary" (click)="modal.close('cancel')"><i class="ik ik-x-circle"></i>Cancelar</button>
+        </div>
+    </div>
+</ng-template>
