@@ -651,11 +651,6 @@ export const estadoABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "asignaturaAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_from",
         "type": "address"
       },
