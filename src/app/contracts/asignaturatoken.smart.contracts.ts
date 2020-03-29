@@ -472,42 +472,6 @@ export const asignaturaTokenABI = [
         "internalType": "address",
         "name": "profesor",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "alumno",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "cursoAcademico",
-        "type": "string"
-      }
-    ],
-    "name": "mintMatricula",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "universidad",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "profesor",
-        "type": "address"
       }
     ],
     "name": "registrarUniversidadProfesor",
